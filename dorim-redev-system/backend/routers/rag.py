@@ -6,7 +6,7 @@ import anthropic
 from rag_engine import rag_engine
 
 router = APIRouter(tags=["rag"])
-_anthropic = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY", ""))
+_anthropic = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
 
 class RagQuery(BaseModel):
@@ -26,20 +26,22 @@ def rag_query(body: RagQuery):
         f"[참고 법령]\n{context}"
     )
 
-    message = _anthropic.messages.create(
-        model="claude-sonnet-4-5",
-        max_tokens=1024,
-        messages=[{"role": "user", "content": body.question}],
-        system=system_prompt,
-    )
-
-    return {
-        "data": {
-            "answer": message.content[0].text,
-            "sources": [{"source": c["source"], "excerpt": c["text"][:100]} for c in chunks],
-        },
-        "error": None,
-    }
+    try:
+        message = _anthropic.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": body.question}],
+            system=system_prompt,
+        )
+        return {
+            "data": {
+                "answer": message.content[0].text,
+                "sources": [{"source": c["source"], "excerpt": c["text"][:100]} for c in chunks],
+            },
+            "error": None,
+        }
+    except Exception as exc:
+        return {"data": None, "error": str(exc)}
 
 
 @router.post("/rag/embed-docs")
