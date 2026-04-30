@@ -57,14 +57,19 @@ export default function MemberGrid({ members, onConsentChange }: Props) {
     {
       field: "consent",
       headerName: "동의여부",
-      width: 120,
+      width: 150,
       renderCell: (p: GridRenderCellParams) => (
-        <Switch
-          checked={!!p.row.consent}
-          disabled={loadingId === p.row.member_id}
-          onChange={() => handleToggle(p.row.member_id, !!p.row.consent)}
-          color="success"
-        />
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Switch
+            checked={!!p.row.consent}
+            disabled={loadingId === p.row.member_id}
+            onChange={() => handleToggle(p.row.member_id, !!p.row.consent)}
+            color="success"
+          />
+          <Typography sx={{ fontSize: "14px", color: p.row.consent ? "#22c55e" : "#94a3b8" }}>
+            {p.row.consent ? "동의" : "미동의"}
+          </Typography>
+        </Box>
       ),
     },
   ];

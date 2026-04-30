@@ -42,7 +42,7 @@ export default function ConsentChart({ stats, threshold, isThresholdMet }: Props
         </Typography>
       </Box>
 
-      <Typography sx={{ fontSize: "14px", color: "#64748b" }}>
+      <Typography sx={{ fontSize: "14px", color: "#94a3b8" }}>
         동의 완료 {stats.consented}명 / 전체 {stats.total}명
       </Typography>
 

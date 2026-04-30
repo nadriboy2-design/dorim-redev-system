@@ -221,7 +221,7 @@ export default function DashboardPage() {
                 <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#60a5fa" }}>
                   {status.consent_rate.total}
                 </Typography>
-                <Typography sx={{ fontSize: "14px", color: "#64748b" }}>
+                <Typography sx={{ fontSize: "14px", color: "#94a3b8" }}>
                   전체 토지등소유자
                 </Typography>
               </Box>
@@ -237,7 +237,7 @@ export default function DashboardPage() {
                 <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#22c55e" }}>
                   {status.consent_rate.consented}
                 </Typography>
-                <Typography sx={{ fontSize: "14px", color: "#64748b" }}>
+                <Typography sx={{ fontSize: "14px", color: "#94a3b8" }}>
                   동의 완료
                 </Typography>
               </Box>

@@ -19,7 +19,7 @@ export default function WorkflowTracker({ currentStage, stageName }: Props) {
 
   return (
     <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2, mb: 2 }}>
-      <Typography sx={{ fontSize: "13px", color: "#94a3b8", mb: 1 }}>
+      <Typography sx={{ fontSize: "16px", color: "#94a3b8", mb: 1 }}>
         현재 사업 단계: <strong style={{ color: "#fff" }}>{stageName}</strong>
       </Typography>
       <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
