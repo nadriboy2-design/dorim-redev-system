@@ -1,0 +1,158 @@
+<h2>설계 섹션 1 — 전체 아키텍처 & 대시보드 레이아웃</h2>
+<p class="subtitle">이 설계가 맞으면 "좋아" 또는 "다음"으로, 수정이 필요하면 내용을 알려주세요</p>
+
+<!-- System Architecture -->
+<div class="section">
+  <div class="label">전체 시스템 아키텍처</div>
+  <div style="background:#0f172a;border-radius:12px;padding:18px;font-size:12px;font-family:monospace;">
+
+    <!-- Layer 1: Frontend -->
+    <div style="border:1px solid #1d4ed8;border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div style="color:#60a5fa;font-weight:700;margin-bottom:8px;">🖥️ FRONTEND — Next.js 14 (TypeScript) · Port 3000</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="background:#1e3a5f;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">📊</div>
+          <div style="color:#93c5fd;font-size:11px;margin-top:4px;">Dashboard<br/>(메인)</div>
+        </div>
+        <div style="background:#1e3a5f;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">👥</div>
+          <div style="color:#93c5fd;font-size:11px;margin-top:4px;">MemberGrid<br/>(조합원)</div>
+        </div>
+        <div style="background:#1e3a5f;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">🗺️</div>
+          <div style="color:#93c5fd;font-size:11px;margin-top:4px;">MapView<br/>(지도)</div>
+        </div>
+        <div style="background:#1e3a5f;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">⚖️</div>
+          <div style="color:#93c5fd;font-size:11px;margin-top:4px;">LegalChat<br/>(RAG)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="text-align:center;color:#475569;margin:4px 0;">↕ REST API / JSON</div>
+
+    <!-- Layer 2: Backend -->
+    <div style="border:1px solid #7c3aed;border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div style="color:#a78bfa;font-weight:700;margin-bottom:8px;">⚙️ BACKEND — FastAPI (Python 3.11) · Port 8000</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+        <div style="background:#2e1065;padding:6px;border-radius:6px;text-align:center;font-size:11px;color:#c4b5fd;">members<br/>router</div>
+        <div style="background:#2e1065;padding:6px;border-radius:6px;text-align:center;font-size:11px;color:#c4b5fd;">workflow<br/>router</div>
+        <div style="background:#2e1065;padding:6px;border-radius:6px;text-align:center;font-size:11px;color:#c4b5fd;">ocr<br/>router</div>
+        <div style="background:#2e1065;padding:6px;border-radius:6px;text-align:center;font-size:11px;color:#c4b5fd;">rag<br/>router</div>
+        <div style="background:#4c1d95;padding:6px;border-radius:6px;text-align:center;font-size:11px;color:#fde68a;border:1px solid #fbbf24;">🔒 compliance<br/>middleware</div>
+      </div>
+    </div>
+
+    <!-- Arrow -->
+    <div style="text-align:center;color:#475569;margin:4px 0;">↕ read/write</div>
+
+    <!-- Layer 3: Data -->
+    <div style="border:1px solid #0f766e;border-radius:8px;padding:12px;">
+      <div style="color:#34d399;font-weight:700;margin-bottom:8px;">💾 DATA LAYER</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;">
+        <div style="background:#052e16;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:14px;">📋</div>
+          <div style="color:#6ee7b7;font-size:11px;margin-top:4px;">members.xlsx<br/><span style="color:#fbbf24;">Single Source</span></div>
+        </div>
+        <div style="background:#052e16;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:14px;">🗄️</div>
+          <div style="color:#6ee7b7;font-size:11px;margin-top:4px;">SQLite<br/>읽기 캐시</div>
+        </div>
+        <div style="background:#052e16;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:14px;">🧠</div>
+          <div style="color:#6ee7b7;font-size:11px;margin-top:4px;">ChromaDB<br/>법령 벡터DB</div>
+        </div>
+        <div style="background:#052e16;padding:8px;border-radius:6px;text-align:center;">
+          <div style="font-size:14px;">📄</div>
+          <div style="color:#6ee7b7;font-size:11px;margin-top:4px;">workflow.yaml<br/>상태머신</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard Layout Mockup -->
+<div class="section" style="margin-top:20px;">
+  <div class="label">대시보드 레이아웃 목업 (메인 화면)</div>
+  <div class="mockup">
+    <div class="mockup-header">도림사거리 역세권 재개발 통합관리 시스템</div>
+    <div class="mockup-body" style="padding:0;">
+
+      <!-- Progress Bar -->
+      <div style="background:#1e293b;padding:10px 16px;border-bottom:1px solid #334155;">
+        <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;">현재 사업 단계</div>
+        <div style="display:flex;gap:0;font-size:11px;">
+          <div style="background:#3b82f6;padding:6px 14px;border-radius:4px 0 0 4px;color:white;font-weight:700;">① 정비구역 입안 ◀ 현재</div>
+          <div style="background:#1e3a5f;padding:6px 14px;color:#64748b;">② 추진위 구성</div>
+          <div style="background:#1e3a5f;padding:6px 14px;color:#64748b;">③ 조합설립</div>
+          <div style="background:#1e3a5f;padding:6px 14px;color:#64748b;">④ 시공사선정</div>
+          <div style="background:#1e3a5f;padding:6px 14px;border-radius:0 4px 4px 0;color:#64748b;">⑤ 관리처분</div>
+        </div>
+      </div>
+
+      <!-- Main Content: Left + Right -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;min-height:320px;">
+
+        <!-- LEFT: 3 Action Buttons + Consent Rate -->
+        <div style="padding:16px;border-right:1px solid #334155;">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:12px;font-weight:600;">빠른 실행</div>
+
+          <!-- Button 1 -->
+          <div style="background:#1d4ed8;border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;">
+            <div style="font-size:18px;margin-bottom:4px;">🤖 AI 비서에게 묻기</div>
+            <div style="font-size:12px;color:#93c5fd;">"임원 해임 요건이 어떻게 되나요?" 등 법령 질의</div>
+          </div>
+
+          <!-- Button 2 -->
+          <div style="background:#166534;border-radius:10px;padding:14px;margin-bottom:10px;cursor:pointer;">
+            <div style="font-size:18px;margin-bottom:4px;">📋 현재 단계 필수 서류 뽑기</div>
+            <div style="font-size:12px;color:#86efac;">정비계획 사전검토 신청서 등 자동 생성</div>
+          </div>
+
+          <!-- Button 3 -->
+          <div style="background:#78350f;border-radius:10px;padding:14px;margin-bottom:14px;cursor:pointer;">
+            <div style="font-size:18px;margin-bottom:4px;">🧾 영수증 지출결의 하기</div>
+            <div style="font-size:12px;color:#fde68a;">영수증 사진 → 지출결의서 PDF 자동 생성</div>
+          </div>
+
+          <!-- Consent Rate -->
+          <div style="background:#0f172a;border-radius:10px;padding:12px;border:1px solid #334155;">
+            <div style="font-size:12px;color:#94a3b8;margin-bottom:8px;">동의율 현황 (사전검토 기준: 40%)</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="flex:1;background:#1e293b;border-radius:4px;height:12px;overflow:hidden;">
+                <div style="background:#3b82f6;width:34%;height:100%;border-radius:4px;"></div>
+              </div>
+              <div style="font-size:15px;font-weight:700;color:#fbbf24;">34% <span style="font-size:11px;color:#ef4444;">↑ 6% 부족</span></div>
+            </div>
+            <div style="font-size:11px;color:#64748b;margin-top:6px;">동의 완료 127명 / 전체 373명</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Map Placeholder + Member Count -->
+        <div style="padding:16px;">
+          <div style="font-size:13px;color:#94a3b8;margin-bottom:12px;font-weight:600;">도림동 239-12 구역 지도</div>
+          <div style="background:#1e293b;border-radius:10px;height:200px;display:flex;align-items:center;justify-content:center;border:1px dashed #334155;margin-bottom:12px;">
+            <div style="text-align:center;color:#475569;">
+              <div style="font-size:28px;">🗺️</div>
+              <div style="font-size:12px;margin-top:6px;">react-leaflet 지도<br/>동의: 🔵 미동의: 🔴</div>
+            </div>
+          </div>
+          <!-- Stats -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div style="background:#0f172a;border-radius:8px;padding:10px;text-align:center;border:1px solid #1e3a5f;">
+              <div style="font-size:20px;font-weight:700;color:#60a5fa;">373</div>
+              <div style="font-size:11px;color:#64748b;">전체 토지등소유자</div>
+            </div>
+            <div style="background:#0f172a;border-radius:8px;padding:10px;text-align:center;border:1px solid #166534;">
+              <div style="font-size:20px;font-weight:700;color:#34d399;">127</div>
+              <div style="font-size:11px;color:#64748b;">동의 완료</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center;margin-top:16px;font-size:13px;color:#64748b;">이 아키텍처와 레이아웃이 맞나요? → "좋아" 또는 수정 사항 알려주세요</p>

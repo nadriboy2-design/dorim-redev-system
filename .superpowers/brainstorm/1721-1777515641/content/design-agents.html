@@ -1,0 +1,120 @@
+<h2>설계 섹션 4 — 6개 에이전트팀 조율 방식</h2>
+<p class="subtitle">CEO가 지휘하고 5개 팀이 병렬 실행 · SendMessage로 API 스펙 공유</p>
+
+<!-- Orchestration Flow -->
+<div class="section">
+  <div class="label">에이전트 오케스트레이션 다이어그램</div>
+  <div style="background:#0f172a;border-radius:12px;padding:16px;font-size:12px;">
+
+    <!-- CEO at top -->
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="display:inline-block;background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:10px;padding:12px 24px;border:2px solid #818cf8;">
+        <div style="font-size:18px;margin-bottom:4px;">👔</div>
+        <div style="font-weight:700;color:white;">① CEO 에이전트</div>
+        <div style="font-size:10px;color:#c7d2fe;">전략 의사결정 · 단계 전환 승인 · 팀 조율</div>
+        <div style="font-size:10px;color:#a5b4fc;margin-top:3px;">claude-sonnet-4-5</div>
+      </div>
+    </div>
+
+    <!-- Connecting lines indicator -->
+    <div style="text-align:center;color:#475569;margin-bottom:12px;font-size:11px;">
+      ↓ SendMessage 로 작업 할당 · 병렬 스폰 ↓
+    </div>
+
+    <!-- 5 Teams -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;">
+
+      <div style="background:#1e3a5f;border-radius:8px;padding:10px;border-top:3px solid #3b82f6;">
+        <div style="font-size:14px;text-align:center;margin-bottom:6px;">🏗️</div>
+        <div style="font-size:11px;font-weight:700;color:#93c5fd;text-align:center;">② 부장급</div>
+        <div style="font-size:10px;color:#64748b;text-align:center;margin-top:4px;">아키텍처 감리<br/>API 스펙 표준화<br/>코드 리뷰</div>
+        <div style="font-size:9px;color:#475569;text-align:center;margin-top:6px;border-top:1px solid #1e3a5f;padding-top:4px;">Sonnet 4.5</div>
+      </div>
+
+      <div style="background:#1a2e1f;border-radius:8px;padding:10px;border-top:3px solid #22c55e;">
+        <div style="font-size:14px;text-align:center;margin-bottom:6px;">💻</div>
+        <div style="font-size:11px;font-weight:700;color:#86efac;text-align:center;">③ 주니어 개발자</div>
+        <div style="font-size:10px;color:#64748b;text-align:center;margin-top:4px;">Next.js 구현<br/>FastAPI CRUD<br/>단위 테스트</div>
+        <div style="font-size:9px;color:#475569;text-align:center;margin-top:6px;border-top:1px solid #1a2e1f;padding-top:4px;">Haiku 3.5</div>
+      </div>
+
+      <div style="background:#2a1f0e;border-radius:8px;padding:10px;border-top:3px solid #f59e0b;">
+        <div style="font-size:14px;text-align:center;margin-bottom:6px;">🎨</div>
+        <div style="font-size:11px;font-weight:700;color:#fde68a;text-align:center;">④ UX 에이전트</div>
+        <div style="font-size:10px;color:#64748b;text-align:center;margin-top:4px;">16px↑ 폰트 강제<br/>WCAG AA 검증<br/>44px 터치 영역</div>
+        <div style="font-size:9px;color:#475569;text-align:center;margin-top:6px;border-top:1px solid #2a1f0e;padding-top:4px;">Haiku 3.5</div>
+      </div>
+
+      <div style="background:#2d0a0a;border-radius:8px;padding:10px;border-top:3px solid #ef4444;">
+        <div style="font-size:14px;text-align:center;margin-bottom:6px;">⚖️</div>
+        <div style="font-size:11px;font-weight:700;color:#fca5a5;text-align:center;">⑤ 법률 에이전트</div>
+        <div style="font-size:10px;color:#64748b;text-align:center;margin-top:4px;">RAG 세팅<br/>하드락 미들웨어<br/>법령 임베딩</div>
+        <div style="font-size:9px;color:#475569;text-align:center;margin-top:6px;border-top:1px solid #2d0a0a;padding-top:4px;">Sonnet 4.5</div>
+      </div>
+
+      <div style="background:#1e0a3d;border-radius:8px;padding:10px;border-top:3px solid #8b5cf6;">
+        <div style="font-size:14px;text-align:center;margin-bottom:6px;">🗺️</div>
+        <div style="font-size:11px;font-weight:700;color:#c4b5fd;text-align:center;">⑥ GIS/데이터</div>
+        <div style="font-size:10px;color:#64748b;text-align:center;margin-top:4px;">Excel 동기화<br/>OCR 파이프라인<br/>지도 매핑</div>
+        <div style="font-size:9px;color:#475569;text-align:center;margin-top:6px;border-top:1px solid #1e0a3d;padding-top:4px;">Haiku 3.5</div>
+      </div>
+
+    </div>
+
+    <!-- SendMessage Protocol -->
+    <div style="border:1px solid #334155;border-radius:8px;padding:12px;">
+      <div style="color:#94a3b8;font-size:11px;font-weight:700;margin-bottom:8px;">📬 SendMessage 협업 프로토콜</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;">
+        <div style="background:#1e293b;padding:8px;border-radius:6px;">
+          <div style="color:#60a5fa;font-weight:700;margin-bottom:4px;">주니어 → 부장급</div>
+          <div style="color:#94a3b8;">API 구현 완료 시 스펙 공유<br/>"PATCH /members/{id}/consent 완료"</div>
+        </div>
+        <div style="background:#1e293b;padding:8px;border-radius:6px;">
+          <div style="color:#ef4444;font-weight:700;margin-bottom:4px;">법률 → 전체 팀</div>
+          <div style="color:#94a3b8;">컴플라이언스 규칙 업데이트 시<br/>모든 팀에 브로드캐스트</div>
+        </div>
+        <div style="background:#1e293b;padding:8px;border-radius:6px;">
+          <div style="color:#8b5cf6;font-weight:700;margin-bottom:4px;">GIS → 주니어</div>
+          <div style="color:#94a3b8;">지오코딩 API 스펙 전달<br/>"/api/gis/markers 엔드포인트"</div>
+        </div>
+        <div style="background:#1e293b;padding:8px;border-radius:6px;">
+          <div style="color:#f59e0b;font-weight:700;margin-bottom:4px;">UX → 주니어</div>
+          <div style="color:#94a3b8;">접근성 위반 발견 시 즉시 알림<br/>"버튼 높이 32px → 44px 수정 필요"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Skills files -->
+<div class="section" style="margin-top:16px;">
+  <div class="label">.claude/skills/ 에이전트 스킬 파일 구조</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:11px;">
+    <div style="background:#0f172a;border-radius:8px;padding:10px;">
+      <div style="color:#818cf8;font-weight:700;margin-bottom:4px;">ceo-orchestrator.md</div>
+      <div style="color:#64748b;">팀 스폰 규칙<br/>단계 전환 승인 기준<br/>에스컬레이션 경로</div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:10px;">
+      <div style="color:#22c55e;font-weight:700;margin-bottom:4px;">junior-dev.md</div>
+      <div style="color:#64748b;">코딩 컨벤션<br/>API 구현 패턴<br/>테스트 작성 규칙</div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:10px;">
+      <div style="color:#fbbf24;font-weight:700;margin-bottom:4px;">ux-accessibility.md</div>
+      <div style="color:#64748b;">폰트 16px 최소 강제<br/>WCAG AA 체크리스트<br/>고령자 UI 가이드</div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:10px;">
+      <div style="color:#ef4444;font-weight:700;margin-bottom:4px;">legal-compliance.md</div>
+      <div style="color:#64748b;">하드락 규칙 정의<br/>RAG 쿼리 패턴<br/>법령 업데이트 절차</div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:10px;">
+      <div style="color:#a78bfa;font-weight:700;margin-bottom:4px;">gis-data.md</div>
+      <div style="color:#64748b;">지오코딩 규칙<br/>133-1 배제 체크<br/>Excel 동기화 절차</div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:10px;">
+      <div style="color:#38bdf8;font-weight:700;margin-bottom:4px;">senior-reviewer.md</div>
+      <div style="color:#64748b;">코드 리뷰 기준<br/>API 스펙 승인 절차<br/>성능 검토 항목</div>
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center;margin-top:16px;font-size:13px;color:#64748b;">전체 설계 승인이면 "좋아" → 설계 문서를 파일로 저장하겠습니다</p>

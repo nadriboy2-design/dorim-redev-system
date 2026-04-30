@@ -124,3 +124,57 @@ export interface WorkflowStatus {
   consent_rate: ConsentRate;
   is_threshold_met: boolean;
 }
+
+// ── 정비계획(안) 2023.6 기반 사업 정보 ─────────────────────────────────────
+
+export interface UnitType {
+  type: string;
+  area_sqm: number;
+  lease_units: number;
+  total_units: number;
+}
+
+export interface HousingPlanData {
+  total_units: number;
+  long_term_lease_units: number;
+  redev_rental_units: number;
+  total_rental_units: number;
+  general_sale_units: number;
+  unit_types: UnitType[];
+}
+
+export interface FarInfo {
+  base_far_pct: number;
+  base_far_after_donation_pct: number;
+  legal_max_far_pct: number;
+  planned_far_pct: number;
+  far_increase_pct: number;
+  public_rental_ratio_pct: number;
+  far_formula: string;
+}
+
+export interface ProjectInfo {
+  project_name: string;
+  zone: string;
+  area_sqm: number;
+  land_area_sqm: number;
+  lot_area_sqm: number;
+  station_zone_1_m: number;
+  station_zone_2_m: number;
+  far: FarInfo;
+  housing_plan: HousingPlanData;
+}
+
+export async function fetchProjectInfo(): Promise<ProjectInfo> {
+  const res = await fetch(`${BASE_URL}/api/project/info`);
+  if (!res.ok) throw new Error("사업 기본 정보 조회 실패");
+  const json = await res.json();
+  return json.data as ProjectInfo;
+}
+
+export async function fetchHousingPlan(): Promise<HousingPlanData> {
+  const res = await fetch(`${BASE_URL}/api/project/housing-plan`);
+  if (!res.ok) throw new Error("세대수 계획 조회 실패");
+  const json = await res.json();
+  return json.data as HousingPlanData;
+}

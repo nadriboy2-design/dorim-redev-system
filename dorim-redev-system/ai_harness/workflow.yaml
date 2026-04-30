@@ -401,6 +401,26 @@ stages:
 
 # ─────────────────────────────────────────────────────────────────────────────
 compliance:
-  far_limit_pct: 700
-  zone_1_radius_m: 250
-  zone_2_radius_m: 500
+  far_limit_pct: 700                  # 서울시 역세권 절대 상한 (1차 역세권 준주거)
+  project_far_limit_pct: 377.86       # 도림2동 사업 실제 법적상한용적률 (가중평균, 2023.6 계획안)
+  zone_1_radius_m: 350                # 1차 역세권 반경 (PDF 기준: 350m)
+  zone_2_radius_m: 500                # 2차 역세권 반경
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PDF 정비계획 수립(안) 2023.6 핵심 지표
+# 출처: 도림 역세권 시프트 재개발 정비사업 정비계획 수립(안) (영등포구, 2023.6)
+# ─────────────────────────────────────────────────────────────────────────────
+project_stats:
+  land_area_sqm: 58621.43             # 사업구역 면적
+  lot_area_sqm: 49908.91              # 획지 면적
+  base_far_pct: 202.21                # 기준용적률 (가중평균)
+  base_far_after_donation_pct: 204.87 # 공공기여 후 기준용적률
+  legal_max_far_pct: 377.86           # 법적상한용적률
+  planned_far_pct: 377.81             # 계획 용적률
+  far_increase_pct: 172.99            # 용적률 증가분
+  donated_area_sqm: 504.52            # 공공시설 순부담 면적
+  donation_ratio_pct: 0.86            # 순부담률
+  long_term_lease_units: 465          # 장기전세주택 세대수
+  redev_rental_units: 129             # 재개발 공공임대주택 세대수
+  total_rental_units: 594             # 총 임대주택
+  total_units: 853                    # 전체 세대수

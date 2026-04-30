@@ -1,0 +1,137 @@
+<h2>설계 섹션 3 — 스프린트 2 상세 설계</h2>
+<p class="subtitle">법률 RAG · GIS 지도 · 영수증 OCR — 스프린트 1 완료 후 추가되는 모듈</p>
+
+<div style="display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;">
+
+  <!-- Module 1: Legal RAG -->
+  <div style="border:1px solid #ef4444;border-radius:10px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:32px;height:32px;background:#ef4444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;">⚖️</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;">법률 컴플라이언스 에이전트 (RAG)</div>
+        <div style="font-size:11px;color:#fca5a5;">모델: claude-sonnet-4-5 · ChromaDB 로컬</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-size:11px;">
+        <div style="color:#f87171;font-weight:700;margin-bottom:6px;">📚 임베딩 대상 문서</div>
+        <ul style="color:#fca5a5;margin:0;padding-left:14px;line-height:1.8;">
+          <li>역세권 장기전세주택 운영기준 (2026.3.6)</li>
+          <li>서울시 도시정비조례</li>
+          <li>도시정비법 주요 조항</li>
+          <li>영등포구 질의회신 사례</li>
+          <li>관련 판례 요약</li>
+        </ul>
+      </div>
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-size:11px;">
+        <div style="color:#f87171;font-weight:700;margin-bottom:6px;">🔌 API 엔드포인트</div>
+        <div style="margin-bottom:6px;"><span style="color:#60a5fa;">POST</span> <span style="color:#e2e8f0;">/api/rag/query</span><br/><span style="color:#64748b;">자연어 법령 질의 → RAG 답변</span></div>
+        <div><span style="color:#60a5fa;">POST</span> <span style="color:#e2e8f0;">/api/rag/embed-docs</span><br/><span style="color:#64748b;">문서 추가 임베딩</span></div>
+        <div style="margin-top:8px;background:#4c1d95;padding:6px;border-radius:4px;">
+          <span style="color:#fbbf24;">🔒 백그라운드 데몬</span><br/>
+          <span style="color:#c4b5fd;font-size:10px;">모든 문서 생성 시 법령 위반 자동 스캔</span>
+        </div>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:10px;margin-top:10px;font-size:11px;">
+      <div style="color:#f87171;font-weight:700;margin-bottom:4px;">RAG 파이프라인</div>
+      <div style="display:flex;align-items:center;gap:6px;color:#cbd5e1;">
+        <div style="background:#1e293b;padding:5px 8px;border-radius:4px;">사용자 질의</div>
+        <div style="color:#475569;">→</div>
+        <div style="background:#1e293b;padding:5px 8px;border-radius:4px;">ChromaDB<br/>벡터 검색</div>
+        <div style="color:#475569;">→</div>
+        <div style="background:#1e293b;padding:5px 8px;border-radius:4px;">관련 조항<br/>Top-3 추출</div>
+        <div style="color:#475569;">→</div>
+        <div style="background:#7c3aed;padding:5px 8px;border-radius:4px;">claude-sonnet-4-5<br/>답변 생성</div>
+        <div style="color:#475569;">→</div>
+        <div style="background:#1e293b;padding:5px 8px;border-radius:4px;">UI 출력<br/>+ 출처 표시</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 2: GIS Map -->
+  <div style="border:1px solid #8b5cf6;border-radius:10px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:32px;height:32px;background:#8b5cf6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;">🗺️</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;">GIS 지도 매핑 에이전트</div>
+        <div style="font-size:11px;color:#c4b5fd;">react-leaflet + OpenStreetMap (무료) · 모델: claude-haiku-3-5</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-size:11px;">
+        <div style="color:#a78bfa;font-weight:700;margin-bottom:6px;">🗺️ 지도 레이어</div>
+        <ul style="color:#c4b5fd;margin:0;padding-left:14px;line-height:1.8;">
+          <li>중심좌표: 37.5134°N, 126.8986°E</li>
+          <li>줌레벨: 17 (필지 식별 가능)</li>
+          <li>구역계 폴리곤 (59,607㎡)</li>
+          <li>동의 필지: 🔵 파란색 마커</li>
+          <li>미동의 필지: 🔴 붉은색 마커</li>
+          <li>클릭 시: 조합원 권리 팝업</li>
+        </ul>
+      </div>
+      <div style="background:#0f172a;border-radius:8px;padding:12px;font-size:11px;">
+        <div style="color:#a78bfa;font-weight:700;margin-bottom:6px;">🔌 API</div>
+        <div style="margin-bottom:6px;"><span style="color:#60a5fa;">GET</span> <span style="color:#e2e8f0;">/api/gis/markers</span><br/><span style="color:#64748b;">조합원 주소 → 좌표 변환 + 동의여부</span></div>
+        <div style="margin-bottom:6px;"><span style="color:#60a5fa;">GET</span> <span style="color:#e2e8f0;">/api/gis/zone-polygon</span><br/><span style="color:#64748b;">239-12 구역계 GeoJSON 반환</span></div>
+        <div style="background:#2e1065;padding:6px;border-radius:4px;margin-top:8px;">
+          <span style="color:#ef4444;">⛔ 133-1 구역 좌표</span><br/>
+          <span style="color:#fca5a5;font-size:10px;">API 레벨에서 완전 차단</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module 3: OCR -->
+  <div style="border:1px solid #f59e0b;border-radius:10px;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <div style="width:32px;height:32px;background:#f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;">🧾</div>
+      <div>
+        <div style="font-weight:700;font-size:14px;">영수증 OCR → 지출결의서 자동 생성</div>
+        <div style="font-size:11px;color:#fde68a;">PaddleOCR (한글 최적화) · 모델: claude-haiku-3-5</div>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:12px;font-size:11px;">
+      <div style="color:#fbbf24;font-weight:700;margin-bottom:8px;">처리 파이프라인</div>
+      <div style="display:flex;align-items:center;gap:6px;color:#cbd5e1;flex-wrap:wrap;">
+        <div style="background:#1e293b;padding:6px 10px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">📸</div>
+          <div style="font-size:10px;margin-top:2px;">영수증<br/>사진 업로드</div>
+        </div>
+        <div style="color:#475569;font-size:16px;">→</div>
+        <div style="background:#1e293b;padding:6px 10px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">🔍</div>
+          <div style="font-size:10px;margin-top:2px;">PaddleOCR<br/>텍스트 추출</div>
+        </div>
+        <div style="color:#475569;font-size:16px;">→</div>
+        <div style="background:#1e293b;padding:6px 10px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">🔤</div>
+          <div style="font-size:10px;margin-top:2px;">정규식<br/>날짜/상호/금액</div>
+        </div>
+        <div style="color:#475569;font-size:16px;">→</div>
+        <div style="background:#78350f;padding:6px 10px;border-radius:6px;text-align:center;border:1px solid #f59e0b;">
+          <div style="font-size:16px;">📄</div>
+          <div style="font-size:10px;margin-top:2px;">지출결의서<br/>PDF 생성</div>
+        </div>
+        <div style="color:#475569;font-size:16px;">→</div>
+        <div style="background:#1e293b;padding:6px 10px;border-radius:6px;text-align:center;">
+          <div style="font-size:16px;">⬇️</div>
+          <div style="font-size:10px;margin-top:2px;">브라우저<br/>다운로드</div>
+        </div>
+      </div>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div style="background:#1e293b;padding:8px;border-radius:6px;">
+          <div style="color:#fbbf24;font-size:10px;font-weight:700;">추출 필드</div>
+          <div style="color:#fde68a;font-size:10px;line-height:1.7;">날짜 / 상호명 / 공급가액 / 부가세 / 합계</div>
+        </div>
+        <div style="background:#1e293b;padding:8px;border-radius:6px;">
+          <div style="color:#fbbf24;font-size:10px;font-weight:700;">출력 형식</div>
+          <div style="color:#fde68a;font-size:10px;line-height:1.7;">서울시 표준 지출결의서 양식 (reportlab PDF)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;margin-top:16px;font-size:13px;color:#64748b;">스프린트 2 설계가 맞으면 "좋아" → 마지막으로 에이전트팀 조율 방식을 보여드립니다</p>

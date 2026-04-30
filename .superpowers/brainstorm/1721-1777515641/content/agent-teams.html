@@ -1,0 +1,146 @@
+<h2>도림사거리 역세권 재개발 — 6개 에이전트팀 구조</h2>
+<p class="subtitle">각 팀의 역할, 담당 모듈, 사용 모델을 확인하고 조정이 필요한 팀을 클릭해 주세요</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:18px;">
+
+  <!-- CEO -->
+  <div class="option" data-choice="ceo" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#6366f1;display:flex;align-items:center;justify-content:center;font-size:18px;">👔</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">① CEO 에이전트</div>
+        <div style="font-size:11px;color:#6366f1;font-weight:600;">전략 & 의사결정 총괄</div>
+      </div>
+    </div>
+    <ul style="font-size:12px;margin:0;padding-left:16px;color:#ccc;line-height:1.7;">
+      <li>사업 단계 전환 승인/거부</li>
+      <li>컴플라이언스 최종 판단</li>
+      <li>리스크 우선순위 결정</li>
+      <li>다른 에이전트팀 조율</li>
+    </ul>
+    <div style="margin-top:10px;font-size:11px;background:#1e1e2e;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;">
+      🤖 모델: <span style="color:#a5b4fc;">claude-sonnet-4-5</span>
+    </div>
+  </div>
+
+  <!-- 부장급 -->
+  <div class="option" data-choice="senior" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#0ea5e9;display:flex;align-items:center;justify-content:center;font-size:18px;">🏗️</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">② 부장급 에이전트 (10년↑)</div>
+        <div style="font-size:11px;color:#0ea5e9;font-weight:600;">아키텍처 & 품질 감리</div>
+      </div>
+    </div>
+    <ul style="font-size:12px;margin:0;padding-left:16px;color:#ccc;line-height:1.7;">
+      <li>시스템 아키텍처 설계 감리</li>
+      <li>코드 리뷰 & 기술 부채 관리</li>
+      <li>API 스펙 표준화</li>
+      <li>보안/성능 이슈 검토</li>
+    </ul>
+    <div style="margin-top:10px;font-size:11px;background:#1e1e2e;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;">
+      🤖 모델: <span style="color:#a5b4fc;">claude-sonnet-4-5</span>
+    </div>
+  </div>
+
+  <!-- 주니어 개발자 -->
+  <div class="option" data-choice="junior" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#10b981;display:flex;align-items:center;justify-content:center;font-size:18px;">💻</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">③ 주니어 개발자 (5년↓)</div>
+        <div style="font-size:11px;color:#10b981;font-weight:600;">코드 구현 & 기능 개발</div>
+      </div>
+    </div>
+    <ul style="font-size:12px;margin:0;padding-left:16px;color:#ccc;line-height:1.7;">
+      <li>Next.js 컴포넌트 구현</li>
+      <li>FastAPI 엔드포인트 작성</li>
+      <li>Excel CRUD API 구현</li>
+      <li>단위 테스트 작성</li>
+    </ul>
+    <div style="margin-top:10px;font-size:11px;background:#1e1e2e;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;">
+      🤖 모델: <span style="color:#6ee7b7;">claude-haiku-3-5</span> <span style="color:#888;">(경량)</span>
+    </div>
+  </div>
+
+  <!-- UX 에이전트 -->
+  <div class="option" data-choice="ux" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:18px;">🎨</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">④ UX / 접근성 에이전트</div>
+        <div style="font-size:11px;color:#f59e0b;font-weight:600;">고령자 사용성 개선</div>
+      </div>
+    </div>
+    <ul style="font-size:12px;margin:0;padding-left:16px;color:#ccc;line-height:1.7;">
+      <li>폰트 16px↑ 강제 검사</li>
+      <li>명도 대비비 WCAG AA 검증</li>
+      <li>버튼/터치 영역 최소 44px</li>
+      <li>단순 3-액션 대시보드 감리</li>
+    </ul>
+    <div style="margin-top:10px;font-size:11px;background:#1e1e2e;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;">
+      🤖 모델: <span style="color:#6ee7b7;">claude-haiku-3-5</span> <span style="color:#888;">(경량)</span>
+    </div>
+  </div>
+
+  <!-- 법률 컴플라이언스 -->
+  <div class="option" data-choice="legal" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#ef4444;display:flex;align-items:center;justify-content:center;font-size:18px;">⚖️</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">⑤ 법률 컴플라이언스</div>
+        <div style="font-size:11px;color:#ef4444;font-weight:600;">RAG + 법령 위반 차단</div>
+      </div>
+    </div>
+    <ul style="font-size:12px;margin:0;padding-left:16px;color:#ccc;line-height:1.7;">
+      <li>용적률 700% 초과 → 하드락</li>
+      <li>조합설립 전 시공사 선정 차단</li>
+      <li>공사비 검증 없이 분양 차단</li>
+      <li>NotebookLM → ChromaDB RAG</li>
+    </ul>
+    <div style="margin-top:10px;font-size:11px;background:#1e1e2e;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;">
+      🤖 모델: <span style="color:#a5b4fc;">claude-sonnet-4-5</span>
+    </div>
+  </div>
+
+  <!-- 데이터/GIS -->
+  <div class="option" data-choice="gis" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:18px;">🗺️</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">⑥ 데이터 / GIS 에이전트</div>
+        <div style="font-size:11px;color:#8b5cf6;font-weight:600;">엑셀 · OCR · 지도 매핑</div>
+      </div>
+    </div>
+    <ul style="font-size:12px;margin:0;padding-left:16px;color:#ccc;line-height:1.7;">
+      <li>조합원 명부 Excel ↔ DB 동기화</li>
+      <li>영수증 OCR → 지출결의서 PDF</li>
+      <li>도림동 239-12 폴리곤 렌더링</li>
+      <li>동의율 지도 색상 시각화</li>
+    </ul>
+    <div style="margin-top:10px;font-size:11px;background:#1e1e2e;padding:6px 10px;border-radius:6px;width:100%;box-sizing:border-box;">
+      🤖 모델: <span style="color:#6ee7b7;">claude-haiku-3-5</span> <span style="color:#888;">(경량)</span>
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px;padding:14px;background:#0f172a;border-radius:10px;border:1px solid #334155;">
+  <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:#94a3b8;">📋 CLAUDE.md 3가지 핵심 규칙</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px;">
+    <div style="padding:8px;background:#1e293b;border-radius:6px;">
+      <div style="color:#60a5fa;font-weight:700;margin-bottom:4px;">① 프로젝트 & 데이터 격리</div>
+      <div style="color:#cbd5e1;">도림동 239-12만 대상<br/>133-1번지 완전 배제</div>
+    </div>
+    <div style="padding:8px;background:#1e293b;border-radius:6px;">
+      <div style="color:#f87171;font-weight:700;margin-bottom:4px;">② 법적 하드락 규칙</div>
+      <div style="color:#cbd5e1;">용적률 700% 초과 차단<br/>시공사·분양 시기 잠금</div>
+    </div>
+    <div style="padding:8px;background:#1e293b;border-radius:6px;">
+      <div style="color:#34d399;font-weight:700;margin-bottom:4px;">③ 모델 선택 규칙</div>
+      <div style="color:#cbd5e1;">개발 = Sonnet 4.5<br/>사소한 작업 = Haiku</div>
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center;margin-top:16px;font-size:13px;color:#64748b;">변경하고 싶은 팀을 클릭하거나, 터미널에서 수정 사항을 알려주세요 →</p>

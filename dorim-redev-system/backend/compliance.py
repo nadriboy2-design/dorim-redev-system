@@ -46,24 +46,40 @@ class ComplianceChecker:
 
     def check_far(self, far_pct: float) -> None:
         """
-        하드락 A: 용적률 700% 초과 차단
+        하드락 A: 용적률 상한 초과 차단
+        - 이 사업(도림2동)의 법적상한용적률: 377.86% (가중평균)
+        - 서울시 역세권 운영기준 절대 상한: 700% (1차 역세권 준주거)
 
         Args:
             far_pct: 용적률 (%)
 
         Raises:
-            HTTPException: 700% 초과 시 422 Unprocessable Entity
+            HTTPException: 상한 초과 시 422 Unprocessable Entity
         """
         wf = self._load_workflow()
-        limit = wf["compliance"]["far_limit_pct"]
-        if far_pct > limit:
+        abs_limit = wf["compliance"]["far_limit_pct"]          # 700 (절대 상한)
+        project_limit = wf["compliance"].get("project_far_limit_pct", 377.86)  # 이 사업 상한
+
+        if far_pct > abs_limit:
             raise HTTPException(
                 status_code=422,
                 detail={
                     "code": "HARD_LOCK_A",
                     "message": (
-                        f"1차 역세권 법적 상한 {limit}% 초과. "
+                        f"1차 역세권 법적 절대 상한 {abs_limit}% 초과. "
                         "서울시 역세권 장기전세주택 건립 운영기준(2026.3.6.) 위반."
+                    ),
+                },
+            )
+        if far_pct > project_limit:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "code": "HARD_LOCK_A_PROJECT",
+                    "message": (
+                        f"도림2동 역세권 사업 법적상한용적률 {project_limit}% 초과. "
+                        f"계획 용적률: {project_limit}% (1차 역세권 준주거 500%+준공업 300% 가중평균). "
+                        "정비계획 수립(안) 2023.6 기준 초과."
                     ),
                 },
             )

@@ -9,12 +9,14 @@ import ConsentChart from "@/components/ConsentChart";
 import LegalChat from "@/components/LegalChat";
 import MapComponent from "@/components/MapComponent";
 import ReceiptOcr from "@/components/ReceiptOcr";
+import ProjectStats from "@/components/ProjectStats";
+import HousingPlan from "@/components/HousingPlan";
 import {
   fetchMembers, fetchWorkflowStatus, generateDoc,
   Member, WorkflowStatus,
 } from "@/lib/api";
 
-type View = "dashboard" | "members" | "guide";
+type View = "dashboard" | "members" | "guide" | "plan";
 
 export default function DashboardPage() {
   const [members, setMembers]   = useState<Member[]>([]);
@@ -79,11 +81,18 @@ export default function DashboardPage() {
 
       {/* 탭 버튼 */}
       <Box sx={{ display: "flex", gap: 1, mb: 2, flexWrap: "wrap" }}>
-        {(["dashboard", "members", "guide"] as View[]).map((v) => {
+        {(["dashboard", "members", "plan", "guide"] as View[]).map((v) => {
           const labels: Record<View, string> = {
             dashboard: "대시보드",
             members:   "조합원 명부",
+            plan:      "사업 계획",
             guide:     "질의하기",
+          };
+          const icons: Record<View, string> = {
+            dashboard: "📊",
+            members:   "👥",
+            plan:      "📐",
+            guide:     "⚖️",
           };
           return (
             <Button
@@ -92,7 +101,7 @@ export default function DashboardPage() {
               onClick={() => setView(v)}
               sx={{ fontSize: "15px", minHeight: "40px" }}
             >
-              {labels[v]}
+              {icons[v]} {labels[v]}
             </Button>
           );
         })}
@@ -106,7 +115,7 @@ export default function DashboardPage() {
             onClick={() => handleGenerateDoc(status.required_docs[0])}
             sx={{ fontSize: "15px", minHeight: "40px" }}
           >
-            {docLoading ? "생성 중..." : "서류 PDF 다운로드"}
+            {docLoading ? "생성 중..." : "📄 서류 PDF 다운로드"}
           </Button>
         )}
       </Box>
@@ -176,6 +185,14 @@ export default function DashboardPage() {
           members={members}
           onConsentChange={(updated) => setMembers(updated)}
         />
+      )}
+
+      {/* ── 사업 계획 뷰 (PDF 정비계획안 기반) ── */}
+      {view === "plan" && (
+        <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+          <ProjectStats />
+          <HousingPlan />
+        </Box>
       )}
 
       {/* ── 질의하기 뷰 ── */}

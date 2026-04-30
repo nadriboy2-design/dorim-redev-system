@@ -1,0 +1,95 @@
+<h2>아키텍처 접근 방식 — 3가지 옵션</h2>
+<p class="subtitle">스프린트 1 (엑셀 대시보드) 기준. 핵심 쟁점: 엑셀과 DB의 관계를 어떻게 설계하느냐</p>
+
+<div class="options" style="flex-direction:column;gap:16px;margin-top:16px;">
+
+  <!-- Option A - Recommended -->
+  <div class="option" data-choice="A" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:18px;border-color:#34d399;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;width:100%;">
+      <div class="letter" style="background:#34d399;color:#000;">A</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">⭐ 추천 — Excel ↔ SQLite 양방향 캐시 레이어</div>
+        <div style="font-size:12px;color:#34d399;">Excel = 단일 진실 공급원, SQLite = 빠른 읽기 캐시</div>
+      </div>
+    </div>
+
+    <!-- Architecture Diagram -->
+    <div style="background:#0f172a;border-radius:10px;padding:14px;width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <div style="background:#1d4ed8;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">브라우저 (Next.js)</div>
+        <div style="color:#64748b;">←→ REST API</div>
+        <div style="background:#7c3aed;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">FastAPI</div>
+        <div style="color:#64748b;">←→</div>
+        <div style="background:#0f766e;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">SQLite (캐시)</div>
+        <div style="color:#64748b;">←→</div>
+        <div style="background:#b45309;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">members.xlsx</div>
+      </div>
+      <div style="color:#94a3b8;line-height:1.8;font-size:11px;">
+        • 앱 시작 시: Excel → SQLite 로드 (빠른 조회 보장)<br/>
+        • 동의여부 수정 시: SQLite 즉시 업데이트 + Excel 파일 덮어쓰기<br/>
+        • DataGrid 렌더링: SQLite에서 읽기 (빠름)<br/>
+        • 동의율 계산: SQLite COUNT 쿼리 (실시간)
+      </div>
+    </div>
+
+    <div class="pros-cons" style="margin-top:10px;font-size:12px;">
+      <div class="pros"><h4>장점</h4><ul><li>DataGrid 반응속도 빠름</li><li>Excel 원본 항상 최신 유지</li><li>조합원 수백명도 처리 가능</li></ul></div>
+      <div class="cons"><h4>단점</h4><ul><li>동기화 로직 필요 (단순)</li></ul></div>
+    </div>
+  </div>
+
+  <!-- Option B -->
+  <div class="option" data-choice="B" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:18px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;width:100%;">
+      <div class="letter">B</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">단순 Excel 직접 읽기/쓰기</div>
+        <div style="font-size:12px;color:#94a3b8;">중간 DB 없음 — pandas로 매번 Excel 파일 직접 조작</div>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:10px;padding:14px;width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="background:#1d4ed8;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">브라우저</div>
+        <div style="color:#64748b;">←→</div>
+        <div style="background:#7c3aed;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">FastAPI</div>
+        <div style="color:#64748b;">← pandas →</div>
+        <div style="background:#b45309;padding:6px 12px;border-radius:6px;color:white;font-size:11px;">members.xlsx</div>
+      </div>
+      <div style="color:#94a3b8;line-height:1.8;font-size:11px;">
+        • 매 API 호출마다 Excel 파일 open/close<br/>
+        • <span style="color:#fbbf24;">⚠ 조합원 500명 초과 시 응답 지연 가능</span><br/>
+        • <span style="color:#fbbf24;">⚠ 동시 수정 시 파일 잠금 위험</span>
+      </div>
+    </div>
+    <div class="pros-cons" style="margin-top:10px;font-size:12px;">
+      <div class="pros"><h4>장점</h4><ul><li>구현 가장 단순</li><li>동기화 코드 불필요</li></ul></div>
+      <div class="cons"><h4>단점</h4><ul><li>느린 응답속도</li><li>파일 잠금 오류 위험</li></ul></div>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="option" data-choice="C" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:18px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;width:100%;">
+      <div class="letter">C</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">PostgreSQL 메인 DB + Excel 내보내기 전용</div>
+        <div style="font-size:12px;color:#94a3b8;">DB 우선 설계, Excel은 출력 포맷</div>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:10px;padding:14px;width:100%;box-sizing:border-box;font-family:monospace;font-size:12px;">
+      <div style="color:#94a3b8;line-height:1.8;font-size:11px;">
+        • PostgreSQL이 단일 진실 공급원<br/>
+        • Excel은 "내보내기" 버튼으로만 생성<br/>
+        • <span style="color:#ef4444;">⛔ 조합원 명부가 반드시 Excel 원본이어야 한다는 요구사항 위반</span><br/>
+        • Docker/PostgreSQL 설치 필요 → 로컬 구동 복잡
+      </div>
+    </div>
+    <div class="pros-cons" style="margin-top:10px;font-size:12px;">
+      <div class="pros"><h4>장점</h4><ul><li>가장 견고한 DB 구조</li></ul></div>
+      <div class="cons"><h4>단점</h4><ul><li>Excel 단일 진실 공급원 요건 위반</li><li>설치 복잡도 높음</li></ul></div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;margin-top:14px;font-size:13px;color:#64748b;">A를 강력 추천합니다 — 클릭하거나 터미널에서 선택해주세요</p>

@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CalculateIcon from "@mui/icons-material/Calculate";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { Member, patchConsent, updateMember } from "@/lib/api";
 
 interface Props {
@@ -22,6 +21,13 @@ function won(val: number | undefined) {
   if (!val) return "0원";
   return val.toLocaleString() + "원";
 }
+
+// ── 공통 TextField sx ─────────────────────────────────────────────────────
+const fieldSx = { "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } };
+const labelSlot = { inputLabel: { sx: { color: "#94a3b8" } } };
+const inputSlot = (extra?: object) => ({
+  htmlInput: { style: { color: "#e2e8f0", fontSize: "14px" }, ...extra },
+});
 
 // ── 개인 상세 편집 모달 ────────────────────────────────────────────────────
 function MemberDetailModal({
@@ -84,8 +90,13 @@ function MemberDetailModal({
     : "미산정";
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth
-      PaperProps={{ sx: { bgcolor: "#0f172a", color: "#e2e8f0" } }}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      slotProps={{ paper: { sx: { bgcolor: "#0f172a", color: "#e2e8f0" } } }}
+    >
       <DialogTitle sx={{ borderBottom: "1px solid #334155", pb: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Typography sx={{ fontSize: "18px", fontWeight: 700 }}>
@@ -119,32 +130,29 @@ function MemberDetailModal({
         {/* ── 탭 0: 기본정보 ── */}
         {tab === 0 && (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="성명" value={draft.name}
                 onChange={(e) => set("name", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="연락처" value={draft.phone}
                 onChange={(e) => set("phone", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="생년월일" value={draft.birth_date}
                 placeholder="YYYY-MM-DD"
                 onChange={(e) => set("birth_date", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControl fullWidth>
                 <InputLabel sx={{ color: "#94a3b8", fontSize: "14px" }}>소유유형</InputLabel>
                 <Select value={draft.ownership_type}
@@ -158,23 +166,21 @@ function MemberDetailModal({
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField fullWidth label="물건지 주소" value={draft.address}
                 onChange={(e) => set("address", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField fullWidth label="현재 거주지" value={draft.current_address}
                 onChange={(e) => set("current_address", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControlLabel
                 control={
                   <Checkbox checked={!!draft.has_illegal_building}
@@ -190,60 +196,58 @@ function MemberDetailModal({
         {/* ── 탭 1: 재산정보 ── */}
         {tab === 1 && (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="토지면적 (㎡)" type="number"
                 value={draft.land_area}
                 onChange={(e) => set("land_area", parseFloat(e.target.value) || 0)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="건물면적 (㎡)" type="number"
                 value={draft.building_area}
                 onChange={(e) => set("building_area", parseFloat(e.target.value) || 0)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Divider sx={{ borderColor: "#334155", my: 1 }} />
               <Typography sx={{ fontSize: "13px", color: "#94a3b8", mb: 1 }}>
                 종전자산평가액 또는 비례율 변경 시 권리가액·이주비·청산금이 자동 재계산됩니다.
               </Typography>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="종전자산평가액 (원)" type="number"
                 value={draft.prev_asset_value}
                 onChange={(e) => recalc(parseInt(e.target.value) || 0)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
                 helperText={<span style={{ color: "#64748b", fontSize: "11px" }}>감정평가 결과 기준</span>}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="비례율 (%)" type="number"
                 value={draft.proportional_rate}
                 onChange={(e) => recalc(undefined, parseFloat(e.target.value) || 110)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#60a5fa", fontSize: "14px", fontWeight: 700 }, step: "0.01" }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{
+                  inputLabel: { sx: { color: "#94a3b8" } },
+                  htmlInput: { style: { color: "#60a5fa", fontSize: "14px", fontWeight: "700" }, step: "0.01" },
+                }}
+                sx={fieldSx}
                 helperText={<span style={{ color: "#64748b", fontSize: "11px" }}>(종후총가액-총사업비)/종전총가액×100</span>}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="분양예정가액 (원)" type="number"
                 value={draft.estimated_alloc_price}
                 onChange={(e) => recalc(undefined, undefined, parseInt(e.target.value) || 0)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControl fullWidth>
                 <InputLabel sx={{ color: "#94a3b8", fontSize: "14px" }}>분양신청 타입</InputLabel>
                 <Select value={draft.alloc_area_type}
@@ -323,7 +327,7 @@ function MemberDetailModal({
         {/* ── 탭 3: 동의·메모 ── */}
         {tab === 3 && (
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Box sx={{
                 display: "flex", alignItems: "center", gap: 2,
                 bgcolor: "#1e293b", p: 2, borderRadius: 1,
@@ -338,22 +342,20 @@ function MemberDetailModal({
                 </Typography>
               </Box>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField fullWidth label="동의 날짜" value={draft.consent_date}
                 placeholder="YYYY-MM-DD"
                 onChange={(e) => set("consent_date", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={12}>
               <TextField fullWidth multiline rows={4} label="특이사항 및 메모"
                 value={draft.memo}
                 onChange={(e) => set("memo", e.target.value)}
-                InputLabelProps={{ sx: { color: "#94a3b8" } }}
-                inputProps={{ style: { color: "#e2e8f0", fontSize: "14px" } }}
-                sx={{ "& .MuiOutlinedInput-root": { "& fieldset": { borderColor: "#334155" } } }}
+                slotProps={{ ...labelSlot, ...inputSlot() }}
+                sx={fieldSx}
                 placeholder="소송 현황, 연락 불가 사유, 특수 상황 등"
               />
             </Grid>

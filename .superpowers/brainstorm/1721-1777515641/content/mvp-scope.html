@@ -1,0 +1,82 @@
+<h2>MVP 빌드 전략 — 어떤 순서로 개발할까요?</h2>
+<p class="subtitle">6개 서브시스템을 한 번에 모두 구현하면 통합 오류 및 토큰 소진 위험. 단계적 접근을 권장합니다.</p>
+
+<div class="options" style="flex-direction:column;gap:14px;">
+
+  <div class="option" data-choice="A" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:18px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;width:100%;">
+      <div class="letter">A</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">⭐ 추천 — 핵심 3개 먼저, 나머지 후속 스프린트</div>
+        <div style="font-size:12px;color:#94a3b8;">가장 빠르게 실제 업무에 투입 가능한 전략</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;">
+      <div style="background:#0f172a;border-radius:8px;padding:12px;">
+        <div style="color:#34d399;font-size:12px;font-weight:700;margin-bottom:6px;">🟢 스프린트 1 (즉시 착수)</div>
+        <ul style="font-size:12px;color:#cbd5e1;margin:0;padding-left:14px;line-height:1.8;">
+          <li>하네스 인프라 (workflow.yaml)</li>
+          <li>조합원 명부 엑셀 ↔ 웹 DataGrid</li>
+          <li>동의율 실시간 계산 대시보드</li>
+        </ul>
+      </div>
+      <div style="background:#0f172a;border-radius:8px;padding:12px;">
+        <div style="color:#60a5fa;font-size:12px;font-weight:700;margin-bottom:6px;">🔵 스프린트 2 (1주 후)</div>
+        <ul style="font-size:12px;color:#cbd5e1;margin:0;padding-left:14px;line-height:1.8;">
+          <li>법률 컴플라이언스 + RAG</li>
+          <li>GIS 지도 + 동의율 매핑</li>
+          <li>영수증 OCR</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pros-cons" style="margin-top:10px;font-size:12px;">
+      <div class="pros"><h4>장점</h4><ul><li>즉시 엑셀 업무 대체 가능</li><li>단계별 검증 가능</li></ul></div>
+      <div class="cons"><h4>단점</h4><ul><li>2번 배포 필요</li></ul></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="B" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:18px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;width:100%;">
+      <div class="letter">B</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">전체 동시 빌드 — 6개 에이전트팀 병렬 실행</div>
+        <div style="font-size:12px;color:#94a3b8;">보고서에 명시된 방식 그대로 한 번에 완성</div>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:12px;width:100%;box-sizing:border-box;">
+      <div style="font-size:12px;color:#cbd5e1;line-height:1.8;">
+        CEO → 부장급 → 주니어·UX·Legal·GIS 동시 스폰 → start.sh 완성<br/>
+        <span style="color:#fbbf24;">⚠ 단일 세션에서 6개 서브시스템 = 토큰 소진 위험 높음</span><br/>
+        <span style="color:#fbbf24;">⚠ 통합 오류 디버깅 복잡도 매우 높음</span>
+      </div>
+    </div>
+    <div class="pros-cons" style="margin-top:10px;font-size:12px;">
+      <div class="pros"><h4>장점</h4><ul><li>1회 배포로 전체 완성</li><li>보고서 명세 100% 충족</li></ul></div>
+      <div class="cons"><h4>단점</h4><ul><li>토큰 소진 시 중단 위험</li><li>오류 추적 어려움</li></ul></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="C" onclick="toggleSelect(this)" style="flex-direction:column;align-items:flex-start;padding:18px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;width:100%;">
+      <div class="letter">C</div>
+      <div>
+        <div style="font-weight:700;font-size:15px;">하네스 + 법률 에이전트 먼저 — 컴플라이언스 우선</div>
+        <div style="font-size:12px;color:#94a3b8;">법적 리스크 제거를 최우선으로</div>
+      </div>
+    </div>
+    <div style="background:#0f172a;border-radius:8px;padding:12px;width:100%;box-sizing:border-box;">
+      <div style="font-size:12px;color:#cbd5e1;line-height:1.8;">
+        workflow.yaml + 컴플라이언스 미들웨어 + RAG 먼저 완성<br/>
+        → 이후 UI·엑셀·지도 순차 추가<br/>
+        <span style="color:#34d399;">✓ 법적 하드락이 가장 먼저 보호됨</span>
+      </div>
+    </div>
+    <div class="pros-cons" style="margin-top:10px;font-size:12px;">
+      <div class="pros"><h4>장점</h4><ul><li>사업 리스크 우선 제거</li><li>안전망 구축 후 기능 추가</li></ul></div>
+      <div class="cons"><h4>단점</h4><ul><li>UI 완성까지 시간 소요</li></ul></div>
+    </div>
+  </div>
+
+</div>
+
+<p style="text-align:center;margin-top:16px;font-size:13px;color:#64748b;">클릭하거나 터미널에서 A/B/C 로 답해주세요</p>

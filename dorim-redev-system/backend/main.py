@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.sync import sync_db
-from routers import members, workflow, gis, ocr, rag
+from routers import members, workflow, gis, ocr, rag, project_info
 
 # Windows cp949 콘솔에서 유니코드 출력 보장
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
@@ -44,6 +44,7 @@ app.include_router(workflow.router, prefix="/api")
 app.include_router(gis.router, prefix="/api")
 app.include_router(ocr.router, prefix="/api")
 app.include_router(rag.router, prefix="/api")
+app.include_router(project_info.router, prefix="/api")
 
 
 @app.get("/health")
