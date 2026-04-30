@@ -1,0 +1,74 @@
+﻿# dorim-redev-system/ai_harness/workflow.yaml
+project:
+  name: "도림사거리 역세권 재개발"
+  zone: "도림동 239-12"
+  area_sqm: 59607.59
+  excluded_zone: "도림동 133-1 (무관 구역 — 절대 혼입 금지)"
+  lat: 37.5134
+  lng: 126.8986
+
+current_stage: STAGE_1_PRELIMINARY
+
+stages:
+  STAGE_1_PRELIMINARY:
+    name: "정비구역 입안 (사전검토)"
+    consent_threshold: 0.40
+    required_docs:
+      - "정비계획 사전검토 신청서"
+      - "역세권 장기전세주택 건립계획서"
+      - "토지등소유자 명부"
+      - "노후도 및 구역계 검토서"
+    hard_locks:
+      contractor_selection: BLOCKED
+      sale_announcement: BLOCKED
+    next_stage: STAGE_2_COMMITTEE
+
+  STAGE_2_COMMITTEE:
+    name: "추진위원회 구성"
+    consent_threshold: 0.50
+    required_docs:
+      - "추진위원장·위원 명부"
+      - "운영규정"
+      - "창립총회 회의록"
+    hard_locks:
+      contractor_selection: BLOCKED
+      sale_announcement: BLOCKED
+    next_stage: STAGE_3_ASSOCIATION
+
+  STAGE_3_ASSOCIATION:
+    name: "조합 설립 인가"
+    consent_threshold: 0.75
+    required_docs:
+      - "정관 초안"
+      - "조합원 명부 (분양대상자·무허가 소유자)"
+    hard_locks:
+      contractor_selection: ALLOWED
+      sale_announcement: BLOCKED
+    next_stage: STAGE_4_CONTRACTOR
+
+  STAGE_4_CONTRACTOR:
+    name: "시공사 선정"
+    required_docs:
+      - "기본설계도서"
+      - "공동주택 성능요구서"
+      - "물량내역서·산출내역서"
+    hard_locks:
+      contractor_selection: ALLOWED
+      sale_announcement: REQUIRES_COST_VERIFICATION
+    next_stage: STAGE_5_DISPOSAL
+
+  STAGE_5_DISPOSAL:
+    name: "관리처분계획 인가"
+    required_docs:
+      - "관리처분계획서"
+      - "한국부동산원 타당성 검토 신청서"
+    consent_threshold_for_change: 0.667
+    hard_locks:
+      contractor_selection: ALLOWED
+      sale_announcement: REQUIRES_COST_VERIFICATION
+    next_stage: null
+
+compliance:
+  far_limit_pct: 700
+  zone_1_radius_m: 250
+  zone_2_radius_m: 500
