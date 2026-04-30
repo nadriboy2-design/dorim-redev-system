@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.sync import sync_db
-from routers import members, workflow, gis, ocr
+from routers import members, workflow, gis, ocr, rag
 
 
 @asynccontextmanager
@@ -34,6 +34,7 @@ app.include_router(members.router, prefix="/api")
 app.include_router(workflow.router, prefix="/api")
 app.include_router(gis.router, prefix="/api")
 app.include_router(ocr.router, prefix="/api")
+app.include_router(rag.router, prefix="/api")
 
 
 @app.get("/health")
