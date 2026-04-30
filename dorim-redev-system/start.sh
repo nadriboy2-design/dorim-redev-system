@@ -26,6 +26,14 @@ if [ ! -f "../data/members.xlsx" ]; then
   python seed_data.py
 fi
 
+# RAG 문서 임베딩 (처음 1회)
+CHROMA_DB="$SCRIPT_DIR/data/chroma_db"
+if [ ! -d "$CHROMA_DB" ]; then
+  echo "  법령 문서 임베딩 중 (최초 1회, 수분 소요)..."
+  cd "$SCRIPT_DIR/backend"
+  python -c "from rag_engine import rag_engine; n=rag_engine.embed_all_docs(); print(f'  임베딩 완료: {n}개 청크')"
+fi
+
 uvicorn main:app --host 0.0.0.0 --port 8000 &
 BACKEND_PID=$!
 echo "  ✅ 백엔드 PID: $BACKEND_PID"

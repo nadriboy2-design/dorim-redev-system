@@ -51,7 +51,7 @@ export default function LegalChat() {
         {loading ? <CircularProgress size={20} /> : "질의하기"}
       </Button>
 
-      {error && <Alert severity="error" sx={{ mt: 2, fontSize: "15px" }}>{error}</Alert>}
+      {error && <Alert severity="error" sx={{ mt: 2, fontSize: "16px" }}>오류: {error}</Alert>}
 
       {result && (
         <Box sx={{ mt: 2 }}>
@@ -60,9 +60,9 @@ export default function LegalChat() {
             {result.answer}
           </Typography>
           <Box sx={{ mt: 2 }}>
-            <Typography sx={{ fontSize: "13px", color: "#94a3b8", mb: 1 }}>📚 참고 법령</Typography>
+            <Typography sx={{ fontSize: "16px", color: "#94a3b8", mb: 1 }}>📚 참고 법령</Typography>
             {result.sources.map((s, i) => (
-              <Typography key={i} sx={{ fontSize: "13px", color: "#94a3b8", mb: 0.5 }}>
+              <Typography key={i} sx={{ fontSize: "16px", color: "#94a3b8", mb: 0.5 }}>
                 [{s.source}] {s.excerpt}...
               </Typography>
             ))}

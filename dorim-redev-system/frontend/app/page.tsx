@@ -4,13 +4,15 @@ import {
   Box,
   Button,
   Typography,
-  TextField,
   CircularProgress,
   Alert,
 } from "@mui/material";
 import WorkflowTracker from "@/components/WorkflowTracker";
 import MemberGrid from "@/components/MemberGrid";
 import ConsentChart from "@/components/ConsentChart";
+import LegalChat from "@/components/LegalChat";
+import MapComponent from "@/components/MapComponent";
+import ReceiptOcr from "@/components/ReceiptOcr";
 import {
   fetchMembers,
   fetchWorkflowStatus,
@@ -23,7 +25,6 @@ export default function DashboardPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [status, setStatus] = useState<WorkflowStatus | null>(null);
   const [loading, setLoading] = useState(true);
-  const [aiQuestion, setAiQuestion] = useState("");
   const [docError, setDocError] = useState<string | null>(null);
   const [docLoading, setDocLoading] = useState(false);
   const [view, setView] = useState<"dashboard" | "members">("dashboard");
@@ -109,28 +110,7 @@ export default function DashboardPage() {
       {view === "dashboard" && status && (
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2 }}>
-              <Typography sx={{ fontSize: "18px", fontWeight: 700, mb: 1 }}>
-                🤖 AI 비서에게 묻기
-              </Typography>
-              <TextField
-                fullWidth
-                multiline
-                rows={3}
-                value={aiQuestion}
-                onChange={(e) => setAiQuestion(e.target.value)}
-                placeholder="예: 임원 해임 총회 소집 요건이 어떻게 되나요?"
-                sx={{ mb: 1, "& .MuiInputBase-input": { fontSize: "16px" } }}
-              />
-              <Button
-                fullWidth
-                variant="contained"
-                size="large"
-                disabled={!aiQuestion.trim()}
-              >
-                질의하기 (Sprint 2에서 활성화)
-              </Button>
-            </Box>
+            <LegalChat />
 
             <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2 }}>
               <Typography sx={{ fontSize: "18px", fontWeight: 700, mb: 1 }}>
@@ -139,14 +119,14 @@ export default function DashboardPage() {
               {status.required_docs.map((doc) => (
                 <Typography
                   key={doc}
-                  sx={{ fontSize: "15px", color: "#94a3b8", mb: 0.5 }}
+                  sx={{ fontSize: "16px", color: "#94a3b8", mb: 0.5 }}
                 >
                   • {doc}
                 </Typography>
               ))}
               {docError && (
-                <Alert severity="error" sx={{ mt: 1, fontSize: "15px" }}>
-                  {docError}
+                <Alert severity="error" sx={{ mt: 1, fontSize: "16px" }}>
+                  오류: {docError}
                 </Alert>
               )}
               <Button
@@ -162,20 +142,7 @@ export default function DashboardPage() {
               </Button>
             </Box>
 
-            <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2 }}>
-              <Typography sx={{ fontSize: "18px", fontWeight: 700, mb: 1 }}>
-                🧾 영수증 지출결의 하기
-              </Typography>
-              <Button
-                fullWidth
-                variant="contained"
-                color="warning"
-                size="large"
-                disabled
-              >
-                영수증 업로드 (Sprint 2에서 활성화)
-              </Button>
-            </Box>
+            <ReceiptOcr />
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -184,29 +151,8 @@ export default function DashboardPage() {
               threshold={status.consent_threshold}
               isThresholdMet={status.is_threshold_met}
             />
-            <Box
-              sx={{
-                bgcolor: "#1e293b",
-                borderRadius: 2,
-                p: 2,
-                minHeight: 250,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "1px dashed #334155",
-              }}
-            >
-              <Typography
-                sx={{
-                  color: "#475569",
-                  fontSize: "16px",
-                  textAlign: "center",
-                }}
-              >
-                🗺️ GIS 지도
-                <br />
-                (Sprint 2에서 활성화)
-              </Typography>
+            <Box sx={{ bgcolor: "#1e293b", borderRadius: 2, p: 1, minHeight: 300 }}>
+              <MapComponent />
             </Box>
             <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
               <Box
@@ -221,7 +167,7 @@ export default function DashboardPage() {
                 <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#60a5fa" }}>
                   {status.consent_rate.total}
                 </Typography>
-                <Typography sx={{ fontSize: "14px", color: "#94a3b8" }}>
+                <Typography sx={{ fontSize: "16px", color: "#94a3b8" }}>
                   전체 토지등소유자
                 </Typography>
               </Box>
@@ -237,7 +183,7 @@ export default function DashboardPage() {
                 <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#22c55e" }}>
                   {status.consent_rate.consented}
                 </Typography>
-                <Typography sx={{ fontSize: "14px", color: "#94a3b8" }}>
+                <Typography sx={{ fontSize: "16px", color: "#94a3b8" }}>
                   동의 완료
                 </Typography>
               </Box>

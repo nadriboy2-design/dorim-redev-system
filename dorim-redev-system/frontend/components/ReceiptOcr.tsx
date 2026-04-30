@@ -86,7 +86,7 @@ export default function ReceiptOcr() {
             <Typography sx={{ fontSize: "16px", color: "#94a3b8" }}>
               📸 영수증 이미지를 드래그하거나 클릭하여 업로드
             </Typography>
-            <Typography sx={{ fontSize: "14px", color: "#64748b", mt: 1 }}>
+            <Typography sx={{ fontSize: "16px", color: "#94a3b8", mt: 1 }}>
               JPG, PNG, GIF 지원
             </Typography>
           </>
@@ -94,13 +94,13 @@ export default function ReceiptOcr() {
       </Box>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 2, fontSize: "15px" }}>{error}</Alert>
+        <Alert severity="error" sx={{ mb: 2, fontSize: "16px" }}>오류: {error}</Alert>
       )}
 
       {receiptData && (
         <Paper sx={{ bgcolor: "#0f172a", p: 2, borderRadius: 1 }}>
           {!receiptData.ocr_available && (
-            <Alert severity="info" sx={{ mb: 2, fontSize: "14px" }}>
+            <Alert severity="info" sx={{ mb: 2, fontSize: "16px" }}>
               OCR 엔진 미설치 — 아래 필드를 직접 입력해주세요
             </Alert>
           )}
@@ -119,19 +119,19 @@ export default function ReceiptOcr() {
           ))}
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 1, mt: 1 }}>
             <Box sx={{ textAlign: "center" }}>
-              <Typography sx={{ fontSize: "12px", color: "#64748b" }}>공급가액</Typography>
+              <Typography sx={{ fontSize: "16px", color: "#94a3b8" }}>공급가액</Typography>
               <Typography sx={{ fontSize: "18px", fontWeight: 700 }}>
                 {receiptData.supply_amount.toLocaleString()}원
               </Typography>
             </Box>
             <Box sx={{ textAlign: "center" }}>
-              <Typography sx={{ fontSize: "12px", color: "#64748b" }}>부가세</Typography>
+              <Typography sx={{ fontSize: "16px", color: "#94a3b8" }}>부가세</Typography>
               <Typography sx={{ fontSize: "18px", fontWeight: 700 }}>
                 {receiptData.vat.toLocaleString()}원
               </Typography>
             </Box>
             <Box sx={{ textAlign: "center" }}>
-              <Typography sx={{ fontSize: "12px", color: "#64748b" }}>합계</Typography>
+              <Typography sx={{ fontSize: "16px", color: "#94a3b8" }}>합계</Typography>
               <Typography sx={{ fontSize: "20px", fontWeight: 700, color: "#22c55e" }}>
                 {receiptData.total_amount.toLocaleString()}원
               </Typography>
