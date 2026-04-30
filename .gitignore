@@ -1,0 +1,6 @@
+dorim-redev-system/backend/venv/
+dorim-redev-system/backend/__pycache__/
+dorim-redev-system/backend/*.db
+dorim-redev-system/frontend/node_modules/
+dorim-redev-system/frontend/.next/
+dorim-redev-system/data/chroma_db/
