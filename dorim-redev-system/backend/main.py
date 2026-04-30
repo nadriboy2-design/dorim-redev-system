@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db.sync import sync_db
-from routers import members, workflow
+from routers import members, workflow, gis
 
 
 @asynccontextmanager
@@ -32,6 +32,7 @@ app.add_middleware(
 
 app.include_router(members.router, prefix="/api")
 app.include_router(workflow.router, prefix="/api")
+app.include_router(gis.router, prefix="/api")
 
 
 @app.get("/health")
