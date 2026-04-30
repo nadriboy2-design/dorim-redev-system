@@ -1,4 +1,5 @@
 # dorim-redev-system/backend/main.py
+import sys
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,14 +7,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from db.sync import sync_db
 from routers import members, workflow, gis, ocr, rag
 
+# Windows cp949 콘솔에서 유니코드 출력 보장
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf-8-sig"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """앱 시작 시 Excel → SQLite 로드."""
     count = sync_db.load_excel_to_sqlite()
-    print(f"✅ 조합원 명부 로드 완료: {count}명")
+    print(f"[OK] 조합원 명부 로드 완료: {count}명")
     yield
-    print("🛑 서버 종료")
+    print("[종료] 서버 종료")
 
 
 app = FastAPI(
