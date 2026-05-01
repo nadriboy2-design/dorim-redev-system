@@ -56,6 +56,12 @@ app.include_router(rag.router, prefix="/api")
 app.include_router(project_info.router, prefix="/api")
 
 
+@app.get("/")
+def root():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="https://dorim-redev-system.vercel.app")
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "project": "도림사거리 역세권 재개발"}
