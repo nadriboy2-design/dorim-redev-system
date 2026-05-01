@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+venv/
+.venv/
+env/
+.env
+*.egg-info/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.cache/
+npm-debug.log*
+yarn-error.log*
+
+# 환경변수 (민감 정보)
+.env.local
+.env.*.local
+.env.production
+
+# 로그 파일
+*.log
+uvicorn_*.log
+backend_tunnel.log
+frontend_tunnel.log
+frontend.log
+frontend2.log
+frontend2_err.log
+frontend_err.log
+backend_url.txt
+
+# 데이터 파일 (로컬 전용)
+data/*.db
+data/members.xlsx
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# 빌드 캐시
+.pytest_cache/
+.mypy_cache/
+
+# ChromaDB 로컬 DB
+backend/chroma_db/
