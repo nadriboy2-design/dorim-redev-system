@@ -182,27 +182,16 @@ export default function DashboardPage() {
             </Box>
           </Box>
 
-          {/* ── 조감도 ── */}
+          {/* ── 배치도 ── */}
           <Box sx={{ bgcolor: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
             <Typography sx={{ fontSize: "17px", fontWeight: 700, p: 2, pb: 1 }}>
-              🏙️ 도림사거리 역세권 재개발 조감도
+              🗺️ 도림사거리 역세권 재개발 배치도 <span style={{ fontSize: "13px", color: "#64748b", fontWeight: 400 }}>— 정비계획 수립(안) 2023.6</span>
             </Typography>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/birdview.jpg"
-              alt="도림사거리 역세권 재개발 조감도"
-              style={{ width: "100%", maxHeight: 480, objectFit: "cover", display: "block" }}
-              onError={(e) => {
-                const el = e.currentTarget;
-                el.style.display = "none";
-                const parent = el.parentElement;
-                if (parent) {
-                  const msg = document.createElement("div");
-                  msg.style.cssText = "padding:40px;text-align:center;color:#64748b;font-size:15px;";
-                  msg.innerText = "📁 조감도 이미지를 추가하려면 frontend/public/birdview.jpg 파일을 넣어주세요.";
-                  parent.appendChild(msg);
-                }
-              }}
+              src="/siteplan.jpg"
+              alt="도림사거리 역세권 재개발 배치도"
+              style={{ width: "100%", objectFit: "contain", display: "block", background: "#0f172a" }}
             />
           </Box>
         </Box>
