@@ -373,9 +373,20 @@ function MemberDetailModal({
   );
 }
 
+/** 주소에서 블록-번지 숫자 추출해 정렬키 반환. "도림동 245-3" → 245003 */
+function addrSortKey(addr: string): number {
+  const m = addr.match(/(\d+)-(\d+)/);
+  if (m) return parseInt(m[1]) * 1000 + parseInt(m[2]);
+  return 999999;
+}
+
+function sortByAddress(arr: Member[]): Member[] {
+  return [...arr].sort((a, b) => addrSortKey(a.address) - addrSortKey(b.address));
+}
+
 // ── MemberGrid 메인 ───────────────────────────────────────────────────────────
 export default function MemberGrid({ members, onConsentChange }: Props) {
-  const [rows, setRows] = useState<Member[]>(members);
+  const [rows, setRows] = useState<Member[]>(sortByAddress(members));
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);

@@ -31,8 +31,11 @@ def get_workflow_status():
         "data": {
             "current_stage": stage_key,
             "stage_name": stage["name"],
+            "current_sub_stage": wf.get("current_sub_stage", ""),
+            "current_sub_stage_detail": wf.get("current_sub_stage_detail", ""),
             "consent_threshold": threshold,
             "required_docs": stage["required_docs"],
+            "cautions": stage.get("cautions", []),
             "consent_rate": rate_data,
             "is_threshold_met": (rate_data["rate"] / 100) >= threshold,
         },

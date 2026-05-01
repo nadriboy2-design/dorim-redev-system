@@ -1,4 +1,5 @@
 # dorim-redev-system/backend/routers/gis.py
+import re
 from fastapi import APIRouter
 from db.sync import sync_db
 
@@ -14,29 +15,11 @@ EXCLUDED_LAT_MAX = 37.512
 EXCLUDED_LNG_MIN = 126.895
 EXCLUDED_LNG_MAX = 126.900
 
-# 주소 → 좌표 간이 매핑 테이블 (도림동 번지별)
-ADDRESS_COORDS = {
-    "239-12": (37.5134, 126.8986),
-    "239-14": (37.5136, 126.8988),
-    "239-16": (37.5132, 126.8984),
-    "240-1":  (37.5140, 126.8990),
-    "240-3":  (37.5138, 126.8992),
-    "241-2":  (37.5142, 126.8994),
-    "241-5":  (37.5144, 126.8996),
-    "242-1":  (37.5128, 126.8980),
-    "242-3":  (37.5126, 126.8978),
-    "243-2":  (37.5150, 126.8998),
-    "243-4":  (37.5148, 126.8976),
-    "244-1":  (37.5146, 126.8974),
-    "244-6":  (37.5120, 126.8970),
-    "245-3":  (37.5118, 126.8968),
-    "245-7":  (37.5116, 126.8966),
-    "246-1":  (37.5114, 126.8964),
-    "246-4":  (37.5112, 126.8962),
-    "247-2":  (37.5110, 126.8960),
-    "247-8":  (37.5108, 126.8958),
-    "248-1":  (37.5106, 126.8956),
-}
+# 구역 바운딩 박스 (도림동 239-270번지 일대, 59,607㎡)
+ZONE_LAT_MIN = 37.5108
+ZONE_LAT_MAX = 37.5162
+ZONE_LNG_MIN = 126.8955
+ZONE_LNG_MAX = 126.9015
 
 
 def _is_excluded_zone(lat: float, lng: float) -> bool:
@@ -45,12 +28,37 @@ def _is_excluded_zone(lat: float, lng: float) -> bool:
             EXCLUDED_LNG_MIN <= lng <= EXCLUDED_LNG_MAX)
 
 
-def _geocode(address: str) -> tuple[float, float]:
-    """주소에서 번지 추출 → 좌표 반환. 실패 시 구역 중심 좌표로 폴백."""
-    for lot_num, coords in ADDRESS_COORDS.items():
-        if lot_num in address:
-            return coords
-    return (ZONE_CENTER_LAT, ZONE_CENTER_LNG)
+def _geocode(address: str, member_id: int = 0) -> tuple[float, float]:
+    """
+    주소에서 번지 추출 → 구역 내 좌표 반환.
+
+    도림동 블록(239-270)을 구역 내 남북 축으로,
+    번지(1-24)를 동서 축으로 매핑하여 800명이 구역 내 고르게 분포.
+    동일 주소 조합원은 member_id 기반 미세 오프셋으로 분리.
+    """
+    match = re.search(r'도림동\s+(\d+)-(\d+)', address)
+    if match:
+        block = int(match.group(1))  # 239 ~ 270
+        lot   = int(match.group(2))  # 1 ~ 24
+
+        # 블록 번호 → 남북(lat) 방향 정규화
+        block_norm = (block - 239) / max(270 - 239, 1)   # 0.0 ~ 1.0
+        # 번지 → 동서(lng) 방향 정규화
+        lot_norm   = (lot - 1)    / max(24 - 1, 1)       # 0.0 ~ 1.0
+
+        lat = ZONE_LAT_MIN + block_norm * (ZONE_LAT_MAX - ZONE_LAT_MIN)
+        lng = ZONE_LNG_MIN + lot_norm   * (ZONE_LNG_MAX - ZONE_LNG_MIN)
+
+        # 같은 주소 조합원 겹침 방지: member_id 기반 미세 오프셋 (±15m 이내)
+        offset_lat = ((member_id * 7 + block) % 31 - 15) * 0.000013
+        offset_lng = ((member_id * 13 + lot)  % 31 - 15) * 0.000015
+
+        return (lat + offset_lat, lng + offset_lng)
+
+    # 번지 파싱 실패 → 구역 중심 근처에 분산 배치
+    offset_lat = ((member_id * 11) % 41 - 20) * 0.000013
+    offset_lng = ((member_id * 17) % 41 - 20) * 0.000015
+    return (ZONE_CENTER_LAT + offset_lat, ZONE_CENTER_LNG + offset_lng)
 
 
 @router.get("/gis/markers")
@@ -59,12 +67,15 @@ def get_gis_markers():
     members = sync_db.get_members()
     markers = []
     for m in members:
-        lat, lng = _geocode(m["address"])
+        lat, lng = _geocode(m["address"], m.get("member_id", 0))
         if _is_excluded_zone(lat, lng):
             continue  # 133-1 구역 데이터 완전 배제
         markers.append({
             "member_id": m["member_id"],
+            "name": m.get("name", ""),
             "address": m["address"],
+            "ownership_type": m.get("ownership_type", ""),
+            "rights_value": m.get("rights_value", 0),
             "lat": lat,
             "lng": lng,
             "consent": bool(m["consent"]),
@@ -75,23 +86,28 @@ def get_gis_markers():
 
 @router.get("/gis/zone-polygon")
 def get_zone_polygon():
-    """도림동 239-12 역세권 재개발 구역계 GeoJSON 반환."""
-    # 실제 구역계 폴리곤 (단순화된 근사치 - 59,607.59㎡)
+    """도림동 239-12 역세권 재개발 구역계 GeoJSON 반환 (실제 구역 근사)."""
+    # 도림동 239-12 일대 59,607.59㎡ — 불규칙 다각형 근사
     geojson = {
         "type": "Feature",
         "properties": {
             "name": "도림사거리 역세권 재개발 구역",
             "zone": "도림동 239-12",
             "area_sqm": 59607.59,
+            "stage": "정비계획 입안 (계획검토 중)",
         },
         "geometry": {
             "type": "Polygon",
             "coordinates": [[
-                [126.8960, 37.5110],
-                [126.9010, 37.5110],
-                [126.9010, 37.5160],
-                [126.8960, 37.5160],
-                [126.8960, 37.5110],
+                [126.8955, 37.5108],
+                [126.8985, 37.5105],
+                [126.9015, 37.5112],
+                [126.9018, 37.5145],
+                [126.9005, 37.5162],
+                [126.8975, 37.5160],
+                [126.8958, 37.5150],
+                [126.8950, 37.5128],
+                [126.8955, 37.5108],
             ]],
         },
     }

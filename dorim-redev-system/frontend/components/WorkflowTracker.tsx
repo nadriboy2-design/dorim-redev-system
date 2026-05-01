@@ -336,6 +336,8 @@ const STAGE_GUIDE: Record<string, {
 interface Props {
   currentStage: string;
   stageName: string;
+  currentSubStage?: string;
+  currentSubStageDetail?: string;
 }
 
 // ── 컬러 팔레트 ──────────────────────────────────────────────────────────────
@@ -346,7 +348,7 @@ const COLORS = {
   text:    "#94a3b8",
 };
 
-export default function WorkflowTracker({ currentStage, stageName }: Props) {
+export default function WorkflowTracker({ currentStage, stageName, currentSubStage, currentSubStageDetail }: Props) {
   const currentIdx = STAGES.findIndex((s) => s.key === currentStage);
   const [expanded, setExpanded] = useState<string | false>(currentStage);
 
@@ -357,10 +359,20 @@ export default function WorkflowTracker({ currentStage, stageName }: Props) {
     <Box sx={{ mb: 2 }}>
       {/* ── 진행 바 ── */}
       <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2, mb: 1 }}>
-        <Typography sx={{ fontSize: "15px", color: "#94a3b8", mb: 1.5 }}>
+        <Typography sx={{ fontSize: "15px", color: "#94a3b8", mb: currentSubStage ? 0.5 : 1.5 }}>
           현재 사업 단계:{" "}
           <strong style={{ color: "#fff", fontSize: "17px" }}>{stageName}</strong>
         </Typography>
+        {currentSubStage && (
+          <Typography sx={{ fontSize: "14px", color: "#60a5fa", mb: 0.3, fontWeight: 600 }}>
+            📍 {currentSubStage}
+          </Typography>
+        )}
+        {currentSubStageDetail && (
+          <Typography sx={{ fontSize: "13px", color: "#94a3b8", mb: 1.5 }}>
+            {currentSubStageDetail}
+          </Typography>
+        )}
         <Box sx={{ display: "flex", gap: 0.8, flexWrap: "wrap" }}>
           {STAGES.map((stage, idx) => {
             const isDone    = idx < currentIdx;

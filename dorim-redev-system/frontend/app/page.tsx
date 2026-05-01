@@ -77,6 +77,8 @@ export default function DashboardPage() {
         <WorkflowTracker
           currentStage={status.current_stage}
           stageName={status.stage_name}
+          currentSubStage={status.current_sub_stage}
+          currentSubStageDetail={status.current_sub_stage_detail}
         />
       )}
 
@@ -129,53 +131,79 @@ export default function DashboardPage() {
 
       {/* ── 대시보드 뷰 ── */}
       {view === "dashboard" && status && (
-        <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* 현재 단계 필수 서류 */}
-            <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2 }}>
-              <Typography sx={{ fontSize: "17px", fontWeight: 700, mb: 1 }}>
-                📋 현재 단계 필수 서류
-              </Typography>
-              {status.required_docs.map((doc) => (
-                <Typography key={doc} sx={{ fontSize: "15px", color: "#94a3b8", mb: 0.5 }}>
-                  • {doc}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {/* 현재 단계 필수 서류 */}
+              <Box sx={{ bgcolor: "#1e293b", p: 2, borderRadius: 2 }}>
+                <Typography sx={{ fontSize: "17px", fontWeight: 700, mb: 1 }}>
+                  📋 현재 단계 필수 서류
                 </Typography>
-              ))}
+                {status.required_docs.map((doc) => (
+                  <Typography key={doc} sx={{ fontSize: "15px", color: "#94a3b8", mb: 0.5 }}>
+                    • {doc}
+                  </Typography>
+                ))}
+              </Box>
+
+              <LegalChat />
+              <ReceiptOcr />
             </Box>
 
-            <LegalChat />
-            <ReceiptOcr />
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <ConsentChart
+                stats={status.consent_rate}
+                threshold={status.consent_threshold}
+                isThresholdMet={status.is_threshold_met}
+              />
+              <Box sx={{ bgcolor: "#1e293b", borderRadius: 2, p: 1, minHeight: 300 }}>
+                <MapComponent />
+              </Box>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
+                <Box sx={{
+                  bgcolor: "#0f172a", p: 2, borderRadius: 2,
+                  textAlign: "center", border: "1px solid #1e3a5f",
+                }}>
+                  <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#60a5fa" }}>
+                    {status.consent_rate.total}
+                  </Typography>
+                  <Typography sx={{ fontSize: "15px", color: "#94a3b8" }}>전체 토지등소유자</Typography>
+                </Box>
+                <Box sx={{
+                  bgcolor: "#0f172a", p: 2, borderRadius: 2,
+                  textAlign: "center", border: "1px solid #166534",
+                }}>
+                  <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#22c55e" }}>
+                    {status.consent_rate.consented}
+                  </Typography>
+                  <Typography sx={{ fontSize: "15px", color: "#94a3b8" }}>동의 완료</Typography>
+                </Box>
+              </Box>
+            </Box>
           </Box>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <ConsentChart
-              stats={status.consent_rate}
-              threshold={status.consent_threshold}
-              isThresholdMet={status.is_threshold_met}
+          {/* ── 조감도 ── */}
+          <Box sx={{ bgcolor: "#1e293b", borderRadius: 2, overflow: "hidden" }}>
+            <Typography sx={{ fontSize: "17px", fontWeight: 700, p: 2, pb: 1 }}>
+              🏙️ 도림사거리 역세권 재개발 조감도
+            </Typography>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/birdview.jpg"
+              alt="도림사거리 역세권 재개발 조감도"
+              style={{ width: "100%", maxHeight: 480, objectFit: "cover", display: "block" }}
+              onError={(e) => {
+                const el = e.currentTarget;
+                el.style.display = "none";
+                const parent = el.parentElement;
+                if (parent) {
+                  const msg = document.createElement("div");
+                  msg.style.cssText = "padding:40px;text-align:center;color:#64748b;font-size:15px;";
+                  msg.innerText = "📁 조감도 이미지를 추가하려면 frontend/public/birdview.jpg 파일을 넣어주세요.";
+                  parent.appendChild(msg);
+                }
+              }}
             />
-            <Box sx={{ bgcolor: "#1e293b", borderRadius: 2, p: 1, minHeight: 300 }}>
-              <MapComponent />
-            </Box>
-            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
-              <Box sx={{
-                bgcolor: "#0f172a", p: 2, borderRadius: 2,
-                textAlign: "center", border: "1px solid #1e3a5f",
-              }}>
-                <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#60a5fa" }}>
-                  {status.consent_rate.total}
-                </Typography>
-                <Typography sx={{ fontSize: "15px", color: "#94a3b8" }}>전체 토지등소유자</Typography>
-              </Box>
-              <Box sx={{
-                bgcolor: "#0f172a", p: 2, borderRadius: 2,
-                textAlign: "center", border: "1px solid #166534",
-              }}>
-                <Typography sx={{ fontSize: "28px", fontWeight: 700, color: "#22c55e" }}>
-                  {status.consent_rate.consented}
-                </Typography>
-                <Typography sx={{ fontSize: "15px", color: "#94a3b8" }}>동의 완료</Typography>
-              </Box>
-            </Box>
           </Box>
         </Box>
       )}

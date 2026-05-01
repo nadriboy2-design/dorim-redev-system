@@ -119,8 +119,11 @@ export interface ProportionalStats {
 export interface WorkflowStatus {
   current_stage: string;
   stage_name: string;
+  current_sub_stage?: string;
+  current_sub_stage_detail?: string;
   consent_threshold: number;
   required_docs: string[];
+  cautions?: string[];
   consent_rate: ConsentRate;
   is_threshold_met: boolean;
 }
