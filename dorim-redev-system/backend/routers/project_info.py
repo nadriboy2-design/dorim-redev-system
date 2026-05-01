@@ -36,18 +36,23 @@ PROJECT_DATA = {
         "donation_ratio_pct": 0.86,     # 순부담률
     },
     "housing_plan": {
-        "total_units": 853,             # 전체 세대수 (기준)
-        "long_term_lease_units": 465,   # 장기전세주택 세대수
-        "redev_rental_units": 129,      # 재개발 공공임대주택 세대수
-        "total_rental_units": 594,      # 총 임대주택 (465 + 129)
-        "general_sale_units": 259,      # 일반분양 (853 - 594)
+        # ── 최신 업데이트 (2025년 건축계획 기준) ──────────────────────────────────
+        "total_units": 1640,            # 전체 세대수 (최신)
+        "rental_units": 514,            # 임대 합계 (장기전세 + 재개발임대)
+        "sale_units": 1126,             # 분양 합계
+        # 이전 수치 (2023.6 정비계획안 기준, 참고용)
+        "long_term_lease_units": 465,   # 구 장기전세주택 세대수 (참고)
+        "redev_rental_units": 129,      # 구 재개발 공공임대주택 세대수 (참고)
+        "total_rental_units": 514,      # 총 임대주택
+        "general_sale_units": 1126,     # 일반분양
         "unit_types": [
-            {"type": "39형", "area_sqm": 54.594,  "lease_units": 19,  "total_units": 80},
-            {"type": "49형", "area_sqm": 67.607,  "lease_units": 19,  "total_units": 60},
-            {"type": "59형", "area_sqm": 83.256,  "lease_units": 252, "total_units": 230},
-            {"type": "74형", "area_sqm": 102.442, "lease_units": 30,  "total_units": 80},
-            {"type": "84형", "area_sqm": 115.896, "lease_units": 145, "total_units": 403},
-            {"type": "101형","area_sqm": 137.74,  "lease_units": 0,   "total_units": 75},
+            # type / area_sqm / rental_units / sale_units / total_units / ratio_pct
+            {"type": "39형",  "area_sqm": 54.594,  "rental_units": 41,  "sale_units": 18,  "total_units": 59,   "ratio_pct": 3.60},
+            {"type": "49형",  "area_sqm": 67.607,  "rental_units": 41,  "sale_units": 16,  "total_units": 57,   "ratio_pct": 3.47},
+            {"type": "59형",  "area_sqm": 83.256,  "rental_units": 262, "sale_units": 391, "total_units": 653,  "ratio_pct": 39.82},
+            {"type": "74형",  "area_sqm": 102.442, "rental_units": 53,  "sale_units": 142, "total_units": 195,  "ratio_pct": 11.89},
+            {"type": "84형",  "area_sqm": 115.896, "rental_units": 117, "sale_units": 467, "total_units": 584,  "ratio_pct": 35.61},
+            {"type": "103형", "area_sqm": 143.0,   "rental_units": 0,   "sale_units": 92,  "total_units": 92,   "ratio_pct": 5.61},
         ],
     },
     "height_plan": {
@@ -65,15 +70,18 @@ PROJECT_DATA = {
         "commercial_spaces": 92,
     },
     "schedule": [
-        {"step": 1, "name": "주민제안서 접수", "actor": "사업자 → 영등포구"},
-        {"step": 2, "name": "입안여부 결정 및 통보", "actor": "영등포구 → 사업자"},
-        {"step": 3, "name": "주민의견 청취 및 관련부서 협의", "actor": "영등포구"},
-        {"step": 4, "name": "구 도시건축공동위원회 자문", "actor": "영등포구"},
-        {"step": 5, "name": "서울시 결정 요청", "actor": "영등포구 → 서울시"},
-        {"step": 6, "name": "서울시 도시·건축공동위원회 심의", "actor": "서울시"},
-        {"step": 7, "name": "지구단위계획결정고시", "actor": "서울시"},
-        {"step": 8, "name": "서울시 교통·건축위원회 심의", "actor": "서울시"},
-        {"step": 9, "name": "사업계획인가", "actor": "영등포구"},
+        # 다. 정비계획 수립 절차 (사업추진 절차도 기준)
+        {"step": 1,  "name": "사전검토",                  "actor": "영등포구",         "current": False},
+        {"step": 2,  "name": "정비계획 입안 제안",         "actor": "사업자 → 영등포구", "current": True},   # ← 현재 단계 ✓
+        {"step": 3,  "name": "계획검토",                  "actor": "영등포구",         "current": False},
+        {"step": 4,  "name": "주민설명회, 주민공람",        "actor": "영등포구",         "current": False},
+        {"step": 5,  "name": "구의회 의견청취",            "actor": "구의회",           "current": False},
+        {"step": 6,  "name": "정비계획 결정 요청 (區→市)", "actor": "영등포구 → 서울시", "current": False},
+        {"step": 7,  "name": "감정평가",                  "actor": "감정평가법인",      "current": False},
+        {"step": 8,  "name": "市 도시계획위원회 심의",     "actor": "서울시",           "current": False},
+        {"step": 9,  "name": "정비계획 결정·고시 (市)",    "actor": "서울시",           "current": False},
+        {"step": 10, "name": "건축심의 등 인허가 절차",    "actor": "서울시·영등포구",  "current": False},
+        {"step": 11, "name": "준공인가",                  "actor": "영등포구",         "current": False},
     ],
     "surrounding_buildings": [
         {"name": "신길우성1차아파트", "height_m": 52.5, "floors": 14},

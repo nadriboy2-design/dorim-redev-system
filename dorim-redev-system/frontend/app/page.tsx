@@ -11,6 +11,7 @@ import MapComponent from "@/components/MapComponent";
 import ReceiptOcr from "@/components/ReceiptOcr";
 import ProjectStats from "@/components/ProjectStats";
 import HousingPlan from "@/components/HousingPlan";
+import ProjectSchedule from "@/components/ProjectSchedule";
 import {
   fetchMembers, fetchWorkflowStatus, generateDoc,
   Member, WorkflowStatus,
@@ -190,7 +191,10 @@ export default function DashboardPage() {
       {/* ── 사업 계획 뷰 (PDF 정비계획안 기반) ── */}
       {view === "plan" && (
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
-          <ProjectStats />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <ProjectSchedule />
+            <ProjectStats />
+          </Box>
           <HousingPlan />
         </Box>
       )}
