@@ -6,7 +6,11 @@ import anthropic
 from rag_engine import rag_engine
 
 router = APIRouter(tags=["rag"])
-_anthropic = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+def _get_anthropic_client():
+    """Lazy 초기화 — API 키 없이도 서버가 기동되도록."""
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    return anthropic.Anthropic(api_key=api_key) if api_key else None
 
 
 class RagQuery(BaseModel):
@@ -26,8 +30,22 @@ def rag_query(body: RagQuery):
         f"[참고 법령]\n{context}"
     )
 
+    client = _get_anthropic_client()
+    if client is None:
+        return {
+            "data": {
+                "answer": (
+                    "⚠️ ANTHROPIC_API_KEY가 설정되지 않았습니다. "
+                    "Render 대시보드 → Environment에서 키를 설정해 주세요.\n\n"
+                    f"[검색된 참고 법령]\n{context}"
+                ),
+                "sources": [{"source": c["source"], "excerpt": c["text"][:100]} for c in chunks],
+            },
+            "error": None,
+        }
+
     try:
-        message = _anthropic.messages.create(
+        message = client.messages.create(
             model="claude-sonnet-4-5",
             max_tokens=1024,
             messages=[{"role": "user", "content": body.question}],
