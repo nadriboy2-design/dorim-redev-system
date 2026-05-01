@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: dorim-redev-backend
+    runtime: python
+    rootDir: dorim-redev-system/backend
+    buildCommand: pip install -r requirements-prod.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11.0"
+    plan: free
