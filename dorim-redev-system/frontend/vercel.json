@@ -4,9 +4,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "env": {
-    "NEXT_PUBLIC_API_URL": "@dorim_api_url"
-  },
   "headers": [
     {
       "source": "/(.*)",
