@@ -189,7 +189,7 @@ export default function DashboardPage() {
             </Typography>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/siteplan.jpg"
+              src="/siteplan.jpg?v=1640"
               alt="도림사거리 역세권 재개발 배치도"
               style={{ width: "100%", objectFit: "contain", display: "block", background: "#0f172a" }}
             />
