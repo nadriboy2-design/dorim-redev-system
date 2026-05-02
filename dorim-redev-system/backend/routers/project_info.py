@@ -36,14 +36,13 @@ PROJECT_DATA = {
         "donation_ratio_pct": 0.86,     # 순부담률
     },
     "housing_plan": {
-        # ── 최신 업데이트 (2025년 건축계획 기준) ──────────────────────────────────
-        "total_units": 1640,            # 전체 세대수 (최신)
+        # ── 최신 건축계획 기준 (1,640세대 배치도 확정) ──────────────────────────
+        "total_units": 1640,            # 전체 세대수
         "rental_units": 514,            # 임대 합계 (장기전세 + 재개발임대)
         "sale_units": 1126,             # 분양 합계
-        # 이전 수치 (2023.6 정비계획안 기준, 참고용)
-        "long_term_lease_units": 465,   # 구 장기전세주택 세대수 (참고)
-        "redev_rental_units": 129,      # 구 재개발 공공임대주택 세대수 (참고)
-        "total_rental_units": 514,      # 총 임대주택
+        "long_term_lease_units": 422,   # 장기전세주택 (임대 514의 약 82%)
+        "redev_rental_units": 92,       # 재개발 공공임대주택 (임대 514의 약 18%)
+        "total_rental_units": 514,      # 총 임대주택 (422 + 92)
         "general_sale_units": 1126,     # 일반분양
         "unit_types": [
             # type / area_sqm / rental_units / sale_units / total_units / ratio_pct

@@ -461,7 +461,8 @@ project_stats:
   far_increase_pct: 172.99            # 용적률 증가분
   donated_area_sqm: 504.52            # 공공시설 순부담 면적
   donation_ratio_pct: 0.86            # 순부담률
-  long_term_lease_units: 465          # 장기전세주택 세대수
-  redev_rental_units: 129             # 재개발 공공임대주택 세대수
-  total_rental_units: 594             # 총 임대주택
-  total_units: 853                    # 전체 세대수
+  long_term_lease_units: 422          # 장기전세주택 세대수 (1,640세대 배치도 기준)
+  redev_rental_units: 92              # 재개발 공공임대주택 세대수
+  total_rental_units: 514             # 총 임대주택 (422 + 92)
+  sale_units: 1126                    # 분양 세대수
+  total_units: 1640                   # 전체 세대수 (최신 배치도 기준)
