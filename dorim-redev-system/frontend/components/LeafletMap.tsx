@@ -32,7 +32,7 @@ export default function LeafletMap({ markers }: Props) {
           <CircleMarker
             key={m.member_id}
             center={[m.lat, m.lng]}
-            radius={8}
+            radius={2}
             pathOptions={{ color: m.color, fillColor: m.color, fillOpacity: 0.8 }}
           >
             <Popup>
