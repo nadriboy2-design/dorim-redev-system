@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CalculateIcon from "@mui/icons-material/Calculate";
-import { Member, patchConsent, updateMember } from "@/lib/api";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import { Member, MemberCreate, patchConsent, updateMember, createMember } from "@/lib/api";
 
 interface Props {
   members: Member[];
@@ -384,12 +385,145 @@ function sortByAddress(arr: Member[]): Member[] {
   return [...arr].sort((a, b) => addrSortKey(a.address) - addrSortKey(b.address));
 }
 
+// ── 조합원 추가 모달 ─────────────────────────────────────────────────────────
+const EMPTY_DRAFT: MemberCreate = {
+  name: "", phone: "", birth_date: "", address: "", current_address: "",
+  ownership_type: "토지+건물", land_area: 0, building_area: 0,
+  has_illegal_building: false, prev_asset_value: 0, proportional_rate: 110.0,
+  is_sale_target: true, alloc_area_type: "", estimated_alloc_price: 0,
+  consent: false, consent_date: "", memo: "",
+};
+
+function AddMemberModal({
+  open, onClose, onAdded, currentCount,
+}: {
+  open: boolean; onClose: () => void; onAdded: (m: Member) => void; currentCount: number;
+}) {
+  const [draft, setDraft] = useState<MemberCreate>({ ...EMPTY_DRAFT });
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const set = (f: keyof MemberCreate, v: unknown) =>
+    setDraft((p) => ({ ...p, [f]: v }));
+
+  const handleAdd = async () => {
+    if (!draft.name.trim()) { setError("성명을 입력하세요."); return; }
+    if (!draft.address.trim()) { setError("주소를 입력하세요."); return; }
+    setSaving(true); setError(null);
+    try {
+      const m = await createMember(draft);
+      onAdded(m);
+      setDraft({ ...EMPTY_DRAFT });
+      onClose();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "추가 실패");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth
+      slotProps={{ paper: { sx: { bgcolor: "#0f172a", color: "#e2e8f0" } } }}>
+      <DialogTitle sx={{ borderBottom: "1px solid #334155", pb: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <PersonAddIcon sx={{ color: "#60a5fa" }} />
+          <Typography sx={{ fontSize: "17px", fontWeight: 700 }}>
+            조합원 추가 ({currentCount} / 1,000명)
+          </Typography>
+        </Box>
+      </DialogTitle>
+      <DialogContent sx={{ pt: 2 }}>
+        {error && <Alert severity="error" sx={{ mb: 2, fontSize: "13px" }}>{error}</Alert>}
+        <Grid container spacing={2}>
+          <Grid size={6}>
+            <TextField fullWidth label="성명 *" value={draft.name}
+              onChange={(e) => set("name", e.target.value)}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+          <Grid size={6}>
+            <TextField fullWidth label="연락처" value={draft.phone}
+              onChange={(e) => set("phone", e.target.value)}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+          <Grid size={12}>
+            <TextField fullWidth label="주소 (물건지) *" value={draft.address}
+              placeholder="서울 영등포구 도림동 000-0"
+              onChange={(e) => set("address", e.target.value)}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+          <Grid size={6}>
+            <TextField fullWidth label="생년월일" value={draft.birth_date}
+              placeholder="YYYY-MM-DD"
+              onChange={(e) => set("birth_date", e.target.value)}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+          <Grid size={6}>
+            <FormControl fullWidth>
+              <InputLabel sx={{ color: "#94a3b8", fontSize: "14px" }}>소유유형</InputLabel>
+              <Select value={draft.ownership_type}
+                onChange={(e) => set("ownership_type", e.target.value)}
+                sx={{ color: "#e2e8f0", "& .MuiOutlinedInput-notchedOutline": { borderColor: "#334155" } }}>
+                {["토지+건물", "토지만", "건물만", "집합건물"].map((t) => (
+                  <MenuItem key={t} value={t}>{t}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid size={6}>
+            <TextField fullWidth label="종전자산평가액(원)" type="number"
+              value={draft.prev_asset_value}
+              onChange={(e) => set("prev_asset_value", Number(e.target.value))}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+          <Grid size={6}>
+            <TextField fullWidth label="비례율(%)" type="number"
+              value={draft.proportional_rate}
+              onChange={(e) => set("proportional_rate", Number(e.target.value))}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+          <Grid size={6}>
+            <FormControlLabel
+              control={<Checkbox checked={!!draft.consent}
+                onChange={(e) => set("consent", e.target.checked)}
+                sx={{ color: "#94a3b8" }} />}
+              label={<Typography sx={{ fontSize: "14px", color: "#e2e8f0" }}>동의 완료</Typography>}
+            />
+          </Grid>
+          <Grid size={6}>
+            <FormControlLabel
+              control={<Checkbox checked={!!draft.is_sale_target}
+                onChange={(e) => set("is_sale_target", e.target.checked)}
+                sx={{ color: "#94a3b8" }} />}
+              label={<Typography sx={{ fontSize: "14px", color: "#e2e8f0" }}>분양대상</Typography>}
+            />
+          </Grid>
+          <Grid size={12}>
+            <TextField fullWidth multiline rows={2} label="메모"
+              value={draft.memo}
+              onChange={(e) => set("memo", e.target.value)}
+              slotProps={{ ...labelSlot, ...inputSlot() }} sx={fieldSx} />
+          </Grid>
+        </Grid>
+      </DialogContent>
+      <DialogActions sx={{ borderTop: "1px solid #334155", px: 3, py: 2 }}>
+        <Button onClick={onClose} sx={{ color: "#94a3b8" }}>취소</Button>
+        <Button variant="contained" onClick={handleAdd} disabled={saving}
+          startIcon={<PersonAddIcon />}
+          sx={{ fontSize: "14px", bgcolor: "#1d4ed8" }}>
+          {saving ? "추가 중..." : "조합원 추가"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 // ── MemberGrid 메인 ───────────────────────────────────────────────────────────
 export default function MemberGrid({ members, onConsentChange }: Props) {
   const [rows, setRows] = useState<Member[]>(sortByAddress(members));
   const [loadingId, setLoadingId] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const handleToggle = async (memberId: number, currentConsent: boolean) => {
     setLoadingId(memberId);
@@ -410,6 +544,12 @@ export default function MemberGrid({ members, onConsentChange }: Props) {
 
   const handleSave = (updated: Member) => {
     const next = rows.map((m) => m.member_id === updated.member_id ? updated : m);
+    setRows(next);
+    onConsentChange(next);
+  };
+
+  const handleAdded = (newMember: Member) => {
+    const next = sortByAddress([...rows, newMember]);
     setRows(next);
     onConsentChange(next);
   };
@@ -502,6 +642,25 @@ export default function MemberGrid({ members, onConsentChange }: Props) {
 
   return (
     <Box>
+      {/* 헤더: 조합원 수 + 추가 버튼 */}
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
+        <Typography sx={{ fontSize: "16px", fontWeight: 700 }}>
+          👥 조합원 명부
+          <span style={{ color: rows.length >= 1000 ? "#ef4444" : "#60a5fa", marginLeft: 8, fontSize: "15px" }}>
+            {rows.length.toLocaleString()} / 1,000명
+          </span>
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<PersonAddIcon />}
+          disabled={rows.length >= 1000}
+          onClick={() => setAddOpen(true)}
+          sx={{ fontSize: "14px", bgcolor: "#1d4ed8", minHeight: 36 }}
+        >
+          {rows.length >= 1000 ? "상한 도달" : "조합원 추가"}
+        </Button>
+      </Box>
+
       {/* 통계 요약 바 */}
       <Box sx={{
         display: "grid", gridTemplateColumns: "repeat(4, 1fr)",
@@ -532,8 +691,8 @@ export default function MemberGrid({ members, onConsentChange }: Props) {
         rows={rows}
         columns={columns}
         getRowId={(r) => r.member_id}
-        pageSizeOptions={[10, 20, 50]}
-        initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
+        pageSizeOptions={[25, 50, 100]}
+        initialState={{ pagination: { paginationModel: { pageSize: 25 } } }}
         sx={{
           fontSize: "13px",
           "& .MuiDataGrid-columnHeader": { fontSize: "13px", bgcolor: "#1e293b" },
@@ -553,6 +712,14 @@ export default function MemberGrid({ members, onConsentChange }: Props) {
           onSave={handleSave}
         />
       )}
+
+      {/* 조합원 추가 모달 */}
+      <AddMemberModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        onAdded={handleAdded}
+        currentCount={rows.length}
+      />
     </Box>
   );
 }

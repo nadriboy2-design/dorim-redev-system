@@ -11,6 +11,27 @@ class ConsentUpdate(BaseModel):
     consent: bool
 
 
+class MemberCreate(BaseModel):
+    """새 조합원 등록 모델 (필수: name, address)."""
+    name: str
+    phone: str = ""
+    birth_date: str = ""
+    address: str
+    current_address: str = ""
+    ownership_type: str = "토지+건물"
+    land_area: float = 0.0
+    building_area: float = 0.0
+    has_illegal_building: bool = False
+    prev_asset_value: int = 0
+    proportional_rate: float = 110.0
+    is_sale_target: bool = True
+    alloc_area_type: str = ""
+    estimated_alloc_price: int = 0
+    consent: bool = False
+    consent_date: str = ""
+    memo: str = ""
+
+
 class MemberUpdate(BaseModel):
     """조합원 전체 필드 수정 모델."""
     name: Optional[str] = None
@@ -40,6 +61,29 @@ def get_members():
     """조합원 전체 목록 반환."""
     members = sync_db.get_members()
     return {"data": members, "error": None}
+
+
+@router.post("/members")
+def create_member(body: MemberCreate):
+    """새 조합원 추가 — member_id 자동 채번, 최대 1000명 제한."""
+    current = sync_db.get_consent_rate()
+    if current["total"] >= 1000:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "LIMIT_EXCEEDED", "message": "조합원 수 상한(1,000명)에 도달했습니다."}
+        )
+    fields = body.model_dump()
+    # 권리가액·이주비 자동 계산
+    rights = int(fields["prev_asset_value"] * fields["proportional_rate"] / 100)
+    fields["rights_value"] = rights
+    fields["relocation_cost"] = int(rights * 0.60)
+    if fields["estimated_alloc_price"] > 0:
+        fields["settlement_amount"] = fields["estimated_alloc_price"] - rights
+    else:
+        fields["settlement_amount"] = 0
+    new_id = sync_db.add_member(fields)
+    member = sync_db.get_member(new_id)
+    return {"data": member, "error": None}
 
 
 @router.get("/members/{member_id}")

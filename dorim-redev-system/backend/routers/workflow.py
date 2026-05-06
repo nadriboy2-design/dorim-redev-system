@@ -11,9 +11,8 @@ from db.sync import sync_db
 router = APIRouter(tags=["workflow"])
 WORKFLOW_PATH = Path(__file__).parent.parent.parent / "ai_harness" / "workflow.yaml"
 
-
 def _load_workflow() -> dict:
-    """workflow.yaml를 로드하고 반환"""
+    """workflow.yaml를 항상 파일에서 읽어 반환 (배포 후 최신값 보장)."""
     with open(WORKFLOW_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
 

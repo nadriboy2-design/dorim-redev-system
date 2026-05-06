@@ -69,8 +69,8 @@ class ExcelSyncDB:
         self.excel_path = Path(excel_path)
         self.db_path = Path(db_path)
 
-    def _seed_df(self, n: int = 800) -> pd.DataFrame:
-        """Excel 없을 때 사용할 기본 시드 데이터 (기본 800명).
+    def _seed_df(self, n: int = 1000) -> pd.DataFrame:
+        """Excel 없을 때 사용할 기본 시드 데이터 (기본 1000명).
 
         실제 재개발 구역 통계에 근거한 현실적 분포:
         - 동의율: ~75% (사전검토 임계값 40% 초과)
@@ -174,8 +174,8 @@ class ExcelSyncDB:
             df = pd.read_excel(self.excel_path)
         else:
             # 클라우드 환경: Excel 없음 → 시드 데이터 사용
-            print("[INFO] members.xlsx 없음 — 시드 데이터 800명으로 초기화")
-            df = self._seed_df(800)
+            print("[INFO] members.xlsx 없음 — 시드 데이터 1000명으로 초기화")
+            df = self._seed_df(1000)
 
         # 결측값 처리
         df = df.fillna({
@@ -229,6 +229,40 @@ class ExcelSyncDB:
         conn.close()
         if self.excel_path.exists():
             df.to_excel(self.excel_path, index=False)
+
+    def add_member(self, fields: dict) -> int:
+        """새 조합원 추가 — member_id 자동 채번 후 SQLite + Excel 저장. 반환값: 새 member_id."""
+        conn = sqlite3.connect(self.db_path)
+        row = conn.execute("SELECT MAX(member_id) FROM members").fetchone()
+        new_id = (row[0] or 1000) + 1
+
+        # 기본값 채우기
+        defaults = {
+            "member_id": new_id,
+            "name": "", "phone": "", "birth_date": "",
+            "address": "", "current_address": "",
+            "ownership_type": "토지+건물",
+            "land_area": 0.0, "building_area": 0.0,
+            "has_illegal_building": False,
+            "prev_asset_value": 0, "proportional_rate": 110.0,
+            "rights_value": 0, "is_sale_target": True,
+            "alloc_area_type": "", "estimated_alloc_price": 0,
+            "relocation_cost": 0, "settlement_amount": 0,
+            "consent": False, "consent_date": "", "memo": "",
+        }
+        defaults.update(fields)
+        defaults["member_id"] = new_id
+
+        df_new = pd.DataFrame([defaults])
+        df_new.to_sql("members", conn, if_exists="append", index=False)
+
+        # Excel 동기화
+        df_all = pd.read_sql("SELECT * FROM members ORDER BY member_id", conn)
+        conn.commit()
+        conn.close()
+        if self.excel_path.exists():
+            df_all.to_excel(self.excel_path, index=False)
+        return new_id
 
     def update_member(self, member_id: int, fields: dict) -> None:
         """Update arbitrary fields for a member — SQLite + Excel sync."""

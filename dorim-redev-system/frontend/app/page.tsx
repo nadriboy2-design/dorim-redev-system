@@ -1,14 +1,12 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import {
   Box, Button, Typography, CircularProgress, Alert,
 } from "@mui/material";
 import WorkflowTracker from "@/components/WorkflowTracker";
 import MemberGrid from "@/components/MemberGrid";
 import ConsentChart from "@/components/ConsentChart";
-import LegalChat from "@/components/LegalChat";
-import MapComponent from "@/components/MapComponent";
-import ReceiptOcr from "@/components/ReceiptOcr";
 import ProjectStats from "@/components/ProjectStats";
 import HousingPlan from "@/components/HousingPlan";
 import ProjectSchedule from "@/components/ProjectSchedule";
@@ -17,21 +15,26 @@ import {
   Member, WorkflowStatus,
 } from "@/lib/api";
 
+// 무거운 컴포넌트 동적 임포트 (초기 번들에서 제외)
+const LegalChat   = dynamic(() => import("@/components/LegalChat"),   { ssr: false, loading: () => null });
+const ReceiptOcr  = dynamic(() => import("@/components/ReceiptOcr"),  { ssr: false, loading: () => null });
+
 type View = "dashboard" | "members" | "guide" | "plan";
 
 export default function DashboardPage() {
-  const [members, setMembers]   = useState<Member[]>([]);
-  const [status, setStatus]     = useState<WorkflowStatus | null>(null);
-  const [loading, setLoading]   = useState(true);
-  const [docError, setDocError] = useState<string | null>(null);
-  const [docLoading, setDocLoading] = useState(false);
-  const [view, setView]         = useState<View>("dashboard");
+  const [members, setMembers]        = useState<Member[]>([]);
+  const [membersLoaded, setMembersLoaded] = useState(false);
+  const [status, setStatus]          = useState<WorkflowStatus | null>(null);
+  const [loading, setLoading]        = useState(true);
+  const [docError, setDocError]      = useState<string | null>(null);
+  const [docLoading, setDocLoading]  = useState(false);
+  const [view, setView]              = useState<View>("dashboard");
 
+  // 초기 로딩: 워크플로우 상태만 가져옴 (멤버 데이터는 지연 로딩)
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const [m, s] = await Promise.all([fetchMembers(), fetchWorkflowStatus()]);
-      setMembers(m);
+      const s = await fetchWorkflowStatus();
       setStatus(s);
     } finally {
       setLoading(false);
@@ -39,6 +42,16 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
+
+  // 조합원 명부 탭 전환 시에만 멤버 데이터 로딩
+  const handleViewChange = useCallback((v: View) => {
+    setView(v);
+    if (v === "members" && !membersLoaded) {
+      fetchMembers()
+        .then((m) => { setMembers(m); setMembersLoaded(true); })
+        .catch(console.error);
+    }
+  }, [membersLoaded]);
 
   const handleGenerateDoc = async (docType: string) => {
     setDocError(null);
@@ -101,7 +114,7 @@ export default function DashboardPage() {
             <Button
               key={v}
               variant={view === v ? "contained" : "outlined"}
-              onClick={() => setView(v)}
+              onClick={() => handleViewChange(v)}
               sx={{ fontSize: "15px", minHeight: "40px" }}
             >
               {icons[v]} {labels[v]}
@@ -156,9 +169,6 @@ export default function DashboardPage() {
                 threshold={status.consent_threshold}
                 isThresholdMet={status.is_threshold_met}
               />
-              <Box sx={{ bgcolor: "#1e293b", borderRadius: 2, p: 1, minHeight: 300 }}>
-                <MapComponent />
-              </Box>
               <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
                 <Box sx={{
                   bgcolor: "#0f172a", p: 2, borderRadius: 2,

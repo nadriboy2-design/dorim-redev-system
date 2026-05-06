@@ -175,6 +175,40 @@ export async function fetchProjectInfo(): Promise<ProjectInfo> {
   return json.data as ProjectInfo;
 }
 
+export interface MemberCreate {
+  name: string;
+  phone?: string;
+  birth_date?: string;
+  address: string;
+  current_address?: string;
+  ownership_type?: string;
+  land_area?: number;
+  building_area?: number;
+  has_illegal_building?: boolean;
+  prev_asset_value?: number;
+  proportional_rate?: number;
+  is_sale_target?: boolean;
+  alloc_area_type?: string;
+  estimated_alloc_price?: number;
+  consent?: boolean;
+  consent_date?: string;
+  memo?: string;
+}
+
+export async function createMember(data: MemberCreate): Promise<Member> {
+  const res = await fetch(`${BASE_URL}/api/members`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail?.message ?? "조합원 추가 실패");
+  }
+  const json = await res.json();
+  return json.data as Member;
+}
+
 export async function fetchHousingPlan(): Promise<HousingPlanData> {
   const res = await fetch(`${BASE_URL}/api/project/housing-plan`);
   if (!res.ok) throw new Error("세대수 계획 조회 실패");

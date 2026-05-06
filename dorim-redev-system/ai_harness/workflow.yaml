@@ -9,7 +9,7 @@ project:
 
 current_stage: STAGE_1_PRELIMINARY
 current_sub_stage: "정비계획 입안 → 계획검토 중 (영등포구 검토 단계)"
-current_sub_stage_detail: "정비계획(안) 제출 완료, 영등포구청 검토 및 서울시 심의 대기 중"
+current_sub_stage_detail: "정비계획(안) 제출 진행중"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 서울시 도시 및 주거환경정비법 9단계 워크플로우
@@ -18,7 +18,7 @@ stages:
 
   # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   STAGE_1_PRELIMINARY:
-    name: "정비구역 입안 (사전검토)"
+    name: "정비구역 입안"
     short: "① 구역입안"
     consent_threshold: 0.40
     sub_stages:
