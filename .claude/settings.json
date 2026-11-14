@@ -1,0 +1,26 @@
+{
+  "extraKnownMarketplaces": {
+    "ponytail": { "source": { "source": "github", "repo": "DietrichGebert/ponytail" } },
+    "headroom-marketplace": { "source": { "source": "github", "repo": "headroomlabs-ai/headroom" } },
+    "humanizer": { "source": { "source": "github", "repo": "blader/humanizer" } },
+    "n8n-io": { "source": { "source": "github", "repo": "n8n-io/skills" } }
+  },
+  "enabledPlugins": {
+    "ponytail@ponytail": true,
+    "headroom@headroom-marketplace": true,
+    "headroom-skill@headroom-marketplace": true,
+    "headroom-snip@headroom-marketplace": true,
+    "humanizer@humanizer": true,
+    "n8n-skills@n8n-io": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "hookify@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true
+  },
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [ { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/scripts/cloud-setup.sh\"" } ] }
+    ]
+  }
+}
